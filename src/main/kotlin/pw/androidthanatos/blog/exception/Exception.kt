@@ -14,11 +14,11 @@ class NoTokenException(val code: Int = CODE_HEADER_NO_TOKEN,
 /**
  * 请求token错误异常
  */
-class tokenErrorException(val code: Int = CODE_TOKEN_ERROR,
+class TokenErrorException(val code: Int = CODE_TOKEN_ERROR,
                           val msg: String = MSG_TOKEN_ERROR): Exception(msg)
 
 /**
  * 请求token过期异常
  */
-class tokenTImeOutException(val code: Int = CODE_TOKEN_ERROR,
+class TokenTimeOutException(val code: Int = CODE_TOKEN_ERROR,
                             val msg: String = MSG_TOKEN_ERROR): Exception(msg)

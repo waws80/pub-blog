@@ -20,9 +20,9 @@ class CommonExceptionHandler{
         e.printStackTrace()
         println(request.contextPath)
         return when(e){
-
             is NoTokenException -> ResponseBean(e.code, e.msg)
-
+            is TokenErrorException -> ResponseBean(e.code, e.msg)
+            is TokenTimeOutException -> ResponseBean(e.code, e.msg)
             else ->ResponseBean(CODE_SERVICE_ERROR, MSG_SERVICE_ERROR)
         }
     }
