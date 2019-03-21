@@ -1,10 +1,12 @@
 package pw.androidthanatos.blog.common.util
 
+import org.json.JSONObject
 import org.springframework.util.Base64Utils
 import pw.androidthanatos.blog.common.contract.KEY_EXTENSION_BASE64
 import pw.androidthanatos.blog.common.contract.KEY_VALUE_BASE64
 import pw.androidthanatos.blog.common.contract.STR_EXTENSION_BASE64
 import pw.androidthanatos.blog.common.contract.STR_EXTENSION_MD5
+import pw.androidthanatos.blog.common.extension.logi
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -47,8 +49,8 @@ fun md5(text: String): String{
  */
 fun base64Encode(text: String): String {
     if (text.isEmpty()) return ""
-    val convert = JSONObject().putString(KEY_EXTENSION_BASE64, STR_EXTENSION_BASE64)
-            .putString(KEY_VALUE_BASE64, text).toString()
+    val convert = JSONObject().put(KEY_EXTENSION_BASE64, STR_EXTENSION_BASE64)
+            .put(KEY_VALUE_BASE64, text).toString()
     log.info("base64加密的信息：　$convert")
     return Base64Utils.encodeToString(convert.toByteArray(Charset.forName("UTF-8")))
 }
@@ -58,8 +60,10 @@ fun base64Encode(text: String): String {
  */
 fun base64Decode(text: String, sysEncode: Boolean = true): String{
     if (text.isEmpty()) return ""
-    val src = String(Base64Utils.decodeFromString(text), Charset.forName("UTF-8"))
+    logi("解密原始信息: $text")
+    val src = String(Base64Utils.decode(text.toByteArray(Charset.forName("UTF-8"))), Charset.forName("UTF-8"))
     return if (sysEncode){
+        logi("base64解密信息：$src")
         val jsonObject = JSONObject(src)
         jsonObject.getString(KEY_VALUE_BASE64)
     }else{
