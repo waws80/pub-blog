@@ -1,9 +1,6 @@
-package pw.androidthanatos.blog.exception
+package pw.androidthanatos.blog.common.exception
 
-import pw.androidthanatos.blog.contract.CODE_HEADER_NO_TOKEN
-import pw.androidthanatos.blog.contract.CODE_TOKEN_ERROR
-import pw.androidthanatos.blog.contract.MSG_HEADER_NO_TOKEN
-import pw.androidthanatos.blog.contract.MSG_TOKEN_ERROR
+import pw.androidthanatos.blog.common.contract.*
 
 /**
  * 请求头未发现token异常
@@ -22,3 +19,9 @@ class TokenErrorException(val code: Int = CODE_TOKEN_ERROR,
  */
 class TokenTimeOutException(val code: Int = CODE_TOKEN_ERROR,
                             val msg: String = MSG_TOKEN_ERROR): Exception(msg)
+
+/**
+ * 参数错误异常
+ */
+class ParamsErrorException(val code: Int = CODE_PARAMS_ERROR,
+                           val msg: String = MSG_PARAMS_ERROR): Exception(msg)

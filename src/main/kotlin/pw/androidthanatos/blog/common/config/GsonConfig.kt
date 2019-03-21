@@ -1,6 +1,5 @@
-package pw.androidthanatos.blog.config
+package pw.androidthanatos.blog.common.config
 
-import com.fasterxml.jackson.core.JsonGenerator
 import com.google.gson.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
@@ -11,7 +10,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClas
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.GsonHttpMessageConverter
-import java.lang.reflect.Type
 
 /**
  * gson 配置类

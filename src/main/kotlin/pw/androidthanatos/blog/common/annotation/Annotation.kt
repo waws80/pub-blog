@@ -1,7 +1,7 @@
-package pw.androidthanatos.blog.annotation
+package pw.androidthanatos.blog.common.annotation
 
-import pw.androidthanatos.blog.contract.*
-import pw.androidthanatos.blog.response.*
+import pw.androidthanatos.blog.common.contract.*
+import pw.androidthanatos.blog.common.response.*
 
 /**
  * 登录鉴权注解
@@ -54,3 +54,19 @@ annotation class IntDef(vararg val value: Int)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class StringDef(vararg val value: String)
+
+/**
+ * 用户状态
+ */
+@IntDef(STATUS_USER_NORMAL, STATUS_USER_BLACK)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class UserStatus
+
+/**
+ * 用户状态
+ */
+@IntDef(TYPE_USER_NORMAL, TYPE_USER_ADMIN)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class UserType
