@@ -6,13 +6,12 @@ import pw.androidthanatos.blog.common.contract.KEY_HEADER_TOKEN
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.extension.isMobileSimple
 import pw.androidthanatos.blog.common.extension.isPassWord
-import pw.androidthanatos.blog.common.extension.no
 import pw.androidthanatos.blog.common.token.TokenUtil
-import pw.androidthanatos.blog.common.util.RegexUtil
 import pw.androidthanatos.blog.entity.UserBean
 import pw.androidthanatos.blog.service.user.UserService
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import pw.androidthanatos.blog.common.annotation.Login
+import pw.androidthanatos.blog.common.extension.isUsername
 
 /**
  * 控制器基类
@@ -32,18 +31,24 @@ abstract class BaseController {
     /**
      * 检查参数是否合法
      */
-    protected fun checkParams(vararg params: Any?){
+    protected fun checkParams(vararg params: String?){
         params.forEach {
-            if (null == it){
-                if (it is String){
-                    if ((it as String).isNotEmpty()){
-                        return
-                    }
-                }
+            if (it.isNullOrEmpty()){
                 throw ParamsErrorException()
             }
         }
 
+    }
+
+    /**
+     * 检查参数是否合法
+     */
+    protected fun checkParamsByKey(map: Map<String, String> = emptyMap(), vararg keys: String){
+        keys.forEach {
+            if (map[it].isNullOrEmpty()){
+                throw ParamsErrorException()
+            }
+        }
     }
 
     /**
@@ -63,7 +68,40 @@ abstract class BaseController {
     }
 
     /**
+     * 检查邮箱格式合法性
+     */
+    protected fun checkEmail(email: String?){
+        if (email.isNullOrEmpty() || !email.isPassWord())
+            throw ParamsErrorException()
+    }
+
+    /**
+     * 昵称合法性校验
+     * 取值范围为 a-z,A-Z,0-9,"_",汉字，不能以"_"结尾,用户名必须是 6-20 位
+     */
+    protected fun checkNickName(nickName: String?){
+        if (nickName.isNullOrEmpty() || !nickName.isUsername())
+            throw ParamsErrorException()
+    }
+
+    /**
+     * 检测参数是否为空和检测特定数据是否合法
+     * @param keys 参数key
+     * @return [HashMap] 返回对应的key value
+     */
+    protected fun convertParams(vararg keys: String): HashMap<String, String>{
+        val map = HashMap<String, String>()
+        keys.forEach {
+            val value = request.getParameter(it)?:""
+            map[it] = value
+        }
+        return map
+    }
+
+    /**
      * 获取用户信息
+     * 只有使用了[Login]注解才有数据，否则用户信息为空
+     * 由于登录拦截器已经校验了token的合法性，所以用户信息不可能为空，
      */
     protected fun getUserInfoByToken(): UserBean?{
         val  token = request.getHeader(KEY_HEADER_TOKEN)

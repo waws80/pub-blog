@@ -20,7 +20,13 @@ const val CODE_PARAMS_ERROR = 2001
 const val MSG_PARAMS_ERROR = "请求参数错误"
 
 const val CODE_PHONE_HAS_REGISTER = 2002
-const val MSG_PHONE_HAS_REGISTER = "该手机号已注册"
+const val MSG_PHONE_HAS_REGISTER = "手机号已注册"
+
+const val CODE_PHONE_NOT_REGISTER = 2003
+const val MSG_PHONE_NOT_REGISTER = "手机号未注册"
+
+const val CODE_LOGIN_PARAMS_ERROR = 2004
+const val MSG_LOGIN_PARAMS_ERROR = "登录信息出错"
 
 const val CODE_HEADER_NO_TOKEN = 2002
 const val MSG_HEADER_NO_TOKEN = "请求token不存在"

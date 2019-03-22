@@ -13,6 +13,6 @@ data class ResponseBean (@ResponseCode
                          @ResponseMsg
                          var msg: String = MSG_SUCCESS, //相应信息
                          var data: Any? = null, //相应数据
-                         val timeStep: Long = System.currentTimeMillis() //当前时间戳
+                         val timestamp: Long = System.currentTimeMillis() //当前时间戳
 )
 

@@ -21,6 +21,8 @@ class CommonExceptionHandler{
         e.printStackTrace()
         println(request.contextPath)
         return when(e){
+            //参数错误
+            is ParamsErrorException -> ResponseBean(e.code, e.msg)
             //请求头没有添加token
             is NoTokenException -> ResponseBean(e.code, e.msg)
             //请求头携带token错误
@@ -29,7 +31,7 @@ class CommonExceptionHandler{
             //请求携带token过期
             is TokenTimeOutException -> ResponseBean(e.code, e.msg)
             //请求路径出错404
-            is NoHandlerFoundException -> ResponseBean(CODE_PATH_NOT_FOUND, MSG_PATH_NOT_FOUND, e.message)
+            is NoHandlerFoundException -> ResponseBean(CODE_PATH_NOT_FOUND, MSG_PATH_NOT_FOUND, request.requestURI)
             //服务器异常
             else ->ResponseBean(CODE_SERVICE_ERROR, MSG_SERVICE_ERROR)
         }

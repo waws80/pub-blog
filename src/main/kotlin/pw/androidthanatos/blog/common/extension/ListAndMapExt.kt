@@ -41,6 +41,17 @@ fun <K, V, M : Map<K, V>> M?.filterEmptyValue(): M{
     return this.mapSafeUse().filterValues { it.toString().isNotEmpty() } as M
 }
 
+/**
+ * [Map<K, String>] 安全的获取值
+ */
+fun <K, M : Map<K, String>> M?.safeGet(key: K, notEmpty:(String)->Unit){
+    @Suppress("UNCHECKED_CAST")
+    val value = this.mapSafeUse()[key]
+    if (!value.isNullOrEmpty()){
+        notEmpty.invoke(value)
+    }
+}
+
 fun <V> List<V>?.filterEmptyValue(save:((V)->Boolean)? = null): List<V>{
     return this.listSafeUse().filter {
         save?.invoke(it) ?: it.toString().isNotEmpty()

@@ -14,16 +14,11 @@ import pw.androidthanatos.blog.common.token.TokenUtil
 @RestController
 class MainController {
 
-    @Autowired
-    private lateinit var mTokenUtil: TokenUtil
-
     /**
      * 欢迎 api
      */
-    @GetMapping
-    @Login
+    @GetMapping("index")
     fun index() :ResponseBean{
-        logi(mTokenUtil.createToken("hahaahaha"))
         return ResponseBean(data = "hello! this is a blog api service")
     }
 }

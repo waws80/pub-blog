@@ -1,5 +1,6 @@
 package pw.androidthanatos.blog.common.annotation
 
+import org.springframework.web.bind.annotation.Mapping
 import pw.androidthanatos.blog.common.contract.*
 import pw.androidthanatos.blog.common.response.*
 
@@ -10,6 +11,13 @@ import pw.androidthanatos.blog.common.response.*
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Login(val value: Boolean = true)
 
+/**
+ * 接口版本控制注解
+ */
+@Mapping
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApiVersion(val value: Int)
+
 
 /**
  * 标记[ResponseBean] 可使用的　code
@@ -18,6 +26,8 @@ annotation class Login(val value: Boolean = true)
         CODE_FAILURE,
         CODE_PARAMS_ERROR,
         CODE_PHONE_HAS_REGISTER,
+        CODE_PHONE_NOT_REGISTER,
+        CODE_LOGIN_PARAMS_ERROR,
         CODE_HEADER_NO_TOKEN,
         CODE_PATH_NOT_FOUND,
         CODE_TOKEN_ERROR,
@@ -34,6 +44,8 @@ annotation class ResponseCode
         MSG_FAILURE,
         MSG_PARAMS_ERROR,
         MSG_PHONE_HAS_REGISTER,
+        MSG_PHONE_NOT_REGISTER,
+        MSG_LOGIN_PARAMS_ERROR,
         MSG_HEADER_NO_TOKEN,
         MSG_PATH_NOT_FOUND,
         MSG_TOKEN_ERROR,

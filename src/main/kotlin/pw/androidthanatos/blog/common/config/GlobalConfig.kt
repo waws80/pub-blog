@@ -14,7 +14,7 @@ import pw.androidthanatos.blog.common.interceptor.LoginInterceptor
  * 拦截器配置类
  */
 @Configuration
-class InterceptorConfig : WebMvcConfigurer {
+class GlobalConfig : WebMvcConfigurer {
 
     @Autowired
     private lateinit var mLoginInterceptor: LoginInterceptor
@@ -24,6 +24,7 @@ class InterceptorConfig : WebMvcConfigurer {
         registry.addInterceptor(mLoginInterceptor)
         super.addInterceptors(registry)
     }
+
 
     /**
      * 使用gson转换器返回数据
