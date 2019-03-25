@@ -32,6 +32,7 @@ annotation class ApiVersion(val value: Int)
         CODE_PATH_NOT_FOUND,
         CODE_TOKEN_ERROR,
         CODE_TOKEN_TIME_OUT,
+        CODE_PERMISSION_ERROR,
         CODE_SERVICE_ERROR)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
@@ -50,6 +51,7 @@ annotation class ResponseCode
         MSG_PATH_NOT_FOUND,
         MSG_TOKEN_ERROR,
         MSG_TOKEN_TIME_OUT,
+        MSG_PERMISSION_ERROR,
         MSG_SERVICE_ERROR)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)

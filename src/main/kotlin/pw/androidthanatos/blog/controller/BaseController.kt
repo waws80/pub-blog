@@ -1,5 +1,6 @@
 package pw.androidthanatos.blog.controller
 
+import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pw.androidthanatos.blog.common.contract.KEY_HEADER_TOKEN
@@ -11,6 +12,9 @@ import pw.androidthanatos.blog.entity.UserBean
 import pw.androidthanatos.blog.service.user.UserService
 import javax.servlet.http.HttpServletRequest
 import pw.androidthanatos.blog.common.annotation.Login
+import pw.androidthanatos.blog.common.contract.TYPE_USER_ADMIN
+import pw.androidthanatos.blog.common.contract.TYPE_USER_NORMAL
+import pw.androidthanatos.blog.common.exception.PermissionException
 import pw.androidthanatos.blog.common.extension.isUsername
 
 /**
@@ -27,6 +31,29 @@ abstract class BaseController {
 
     @Autowired
     protected lateinit var tokenUtil: TokenUtil
+
+    /**
+     * 获取参数可为空
+     */
+    protected fun getParams(@NotNull key: String, notEmpty:()->Unit = {}): String{
+        val value = request.getParameter(key)?:""
+        if (value.isNotEmpty()){
+            notEmpty.invoke()
+        }
+        return value
+    }
+
+    /**
+     * 获取不为空的参数
+     */
+    protected fun getParamsNotEmpty(@NotNull key: String): String{
+        val params = getParams(key)
+        if (params.isEmpty()){
+            throw ParamsErrorException()
+        }
+        return params
+    }
+
 
     /**
      * 检查参数是否合法
@@ -82,6 +109,24 @@ abstract class BaseController {
     protected fun checkNickName(nickName: String?){
         if (nickName.isNullOrEmpty() || !nickName.isUsername())
             throw ParamsErrorException()
+    }
+
+
+    /**
+     * 检测权限
+     */
+    protected fun checkAdmin(){
+        val user = getUserInfoByToken()
+        if (user == null || user.admin != TYPE_USER_ADMIN){
+            throw PermissionException()
+        }
+    }
+
+    /**
+     * 检测用户id
+     */
+    protected fun checkUserId(userId: String){
+        userService.findUserByUserId(userId) ?: throw ParamsErrorException()
     }
 
     /**

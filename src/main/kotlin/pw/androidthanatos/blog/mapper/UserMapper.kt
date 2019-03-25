@@ -1,6 +1,7 @@
 package pw.androidthanatos.blog.mapper
 
 import org.apache.ibatis.annotations.*
+import org.springframework.stereotype.Component
 import pw.androidthanatos.blog.common.annotation.UserStatus
 import pw.androidthanatos.blog.entity.UserBean
 import pw.androidthanatos.blog.common.contract.STATUS_USER_NORMAL
@@ -10,6 +11,7 @@ import pw.androidthanatos.blog.common.contract.STATUS_USER_BLACK
  * 用户信息查询
  */
 @Mapper
+@Component
 interface UserMapper {
 
     /**
@@ -52,6 +54,12 @@ interface UserMapper {
      */
     @Update("UPDATE tb_user SET pass = #{pass} WHERE email = #{email}")
     fun updatePassByEmail(email: String, pass: String): Int
+
+    /**
+     * 更新用户密码通过用户id
+     */
+    @Update("UPDATE tb_user SET pass = #{pass} WHERE userId = #{userId}")
+    fun updatePassByUserId(userId: String, pass: String): Int
 
     /**
      * 更新用户状态

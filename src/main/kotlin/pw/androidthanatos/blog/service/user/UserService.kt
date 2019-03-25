@@ -57,4 +57,12 @@ interface UserService {
      * @return [Boolean] true: 成功 false:　失败
      */
     fun updateUserStatusById(userId: String, @UserStatus status: Int): Boolean
+
+    /**
+     * 更新用户密码通过用户id
+     * @param pass 要更新的密码
+     * @param userId 用户id
+     * @return [Boolean] true: 成功 false:　失败
+     */
+    fun updatePassByUserId(pass: String, userId: String): Boolean
 }

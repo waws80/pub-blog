@@ -25,3 +25,9 @@ class TokenTimeOutException(val code: Int = CODE_TOKEN_ERROR,
  */
 class ParamsErrorException(val code: Int = CODE_PARAMS_ERROR,
                            val msg: String = MSG_PARAMS_ERROR): Exception(msg)
+
+/**
+ * 权限不足异常
+ */
+class PermissionException(val code: Int = CODE_PERMISSION_ERROR,
+                          val msg: String = MSG_PERMISSION_ERROR): Exception(msg)

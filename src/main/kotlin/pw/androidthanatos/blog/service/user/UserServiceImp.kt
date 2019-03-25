@@ -68,11 +68,15 @@ class UserServiceImp : UserService{
 
     override fun updatePassByEmail(pass: String, email: String): Boolean {
         //加密信息后更新
-        return mUserMapper.updatePassByEmail(pass.toMd5(), email.toBase64Encode()) > 0
+        return mUserMapper.updatePassByEmail(email.toBase64Encode(), pass.toMd5()) > 0
     }
 
     override fun updateUserStatusById(userId: String, @UserStatus status: Int): Boolean {
         return mUserMapper.updateUserStatusById(userId, status) > 0
+    }
+
+    override fun updatePassByUserId(pass: String, userId: String): Boolean {
+        return mUserMapper.updatePassByUserId(userId, pass.toMd5()) > 0
     }
 
 }

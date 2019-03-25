@@ -1,19 +1,26 @@
 package pw.androidthanatos.blog.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import pw.androidthanatos.blog.common.annotation.ApiVersion
 import pw.androidthanatos.blog.common.annotation.Login
 import pw.androidthanatos.blog.common.contract.*
+import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.extension.*
+import pw.androidthanatos.blog.common.mail.SendMail
 import pw.androidthanatos.blog.common.response.ResponseBean
 import pw.androidthanatos.blog.common.util.createId
 import pw.androidthanatos.blog.entity.UserBean
 import java.util.*
+import kotlin.collections.HashMap
 
 @RestController
 @ApiVersion(1)
 @RequestMapping("/user/{version}")
 class UserController : BaseController(){
+
+    @Autowired
+    private lateinit var sendMail: SendMail
 
     /**
      * 用户接口　index
@@ -129,6 +136,88 @@ class UserController : BaseController(){
         }
         return responseBean
     }
+
+
+    /**
+     * 管理员获取所有用户信息
+     */
+    @Login
+    @GetMapping("list")
+    fun getAll(): ResponseBean{
+        val responseBean = ResponseBean()
+        //检查是否是管理员
+        checkAdmin()
+        responseBean.data = userService.findAllUser()
+        return responseBean
+    }
+
+    /**
+     * 管理员更新用户状态
+     */
+    @Login
+    @PutMapping("updateUserStatus")
+    fun updateUserStatus():ResponseBean{
+        val responseBean = ResponseBean()
+        val otherId = getParamsNotEmpty("otherId")
+        val status = getParamsNotEmpty("status")
+        //检测otherId
+        checkUserId(otherId)
+        //管理员不能更新管理员状态
+        if (userService.findUserByUserId(otherId)?.admin == TYPE_USER_ADMIN){
+            throw ParamsErrorException()
+        }
+        //检测修改的用户状态参数
+        if (status != STATUS_USER_BLACK.toString() && status != STATUS_USER_NORMAL.toString()){
+            throw ParamsErrorException()
+        }
+        val updateStatus = userService.updateUserStatusById(otherId, status.toInt())
+        if (updateStatus){
+            responseBean.data = HashMap<String, Any>().apply {
+                put("newStatus", status)
+            }
+        }else{
+            responseBean.code = CODE_SERVICE_ERROR
+            responseBean.msg = MSG_SERVICE_ERROR
+        }
+        return responseBean
+    }
+
+    /**
+     * 邮箱重置密码发邮件和token修改密码
+     */
+    @Login
+    @RequestMapping(method = [RequestMethod.POST, RequestMethod.PUT],value = ["reSetPass"])
+    fun reSetPass(): ResponseBean{
+        val responseBean = ResponseBean()
+        val user = getUserInfoByToken()
+        //发送邮箱重置密码
+        if (request.method == RequestMethod.POST.name){
+
+            if (user?.email.isNullOrEmpty()){
+                responseBean.code = CODE_PARAMS_ERROR
+                responseBean.msg = "还未绑定邮箱"
+            }else{
+                sendMail.sendResetPassMail(user?.email!!, request.getHeader("token"))
+            }
+        }else{
+            val token = request.getHeader(KEY_HEADER_TOKEN)
+            if (SendMail.linkExpires(token)){
+                SendMail.remove(token)
+                val pass = getParamsNotEmpty("pass")
+                checkPass(pass)
+                val update = userService.updatePassByUserId(pass, user?.userId!!)
+                if (!update){
+                    responseBean.code = CODE_SERVICE_ERROR
+                    responseBean.msg = MSG_SERVICE_ERROR
+                }
+            }else{
+                responseBean.code = CODE_SERVICE_ERROR
+                responseBean.msg = MSG_LINK_EXPIRES
+            }
+        }
+        return responseBean
+    }
+
 
 
     /**
