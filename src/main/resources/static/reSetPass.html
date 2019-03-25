@@ -57,9 +57,10 @@
             let options = {
                 type: "PUT",
                 headers:{
-                  token:  window.location.href.split("?")[1]
+                  token:  window.location.href.split("?")[1],
+                  type: "1"
                 },
-                url: '/user/v1/resetPass',
+                url: '/user/v1/reSetPass',
                 success:function (data) {
                     if (data.code === 1000){
                         alert("修改成功");

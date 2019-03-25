@@ -11,7 +11,6 @@ import pw.androidthanatos.blog.common.mail.SendMail
 import pw.androidthanatos.blog.common.response.ResponseBean
 import pw.androidthanatos.blog.common.util.createId
 import pw.androidthanatos.blog.entity.UserBean
-import java.util.*
 import kotlin.collections.HashMap
 
 @RestController
@@ -71,6 +70,7 @@ class UserController : BaseController(){
         checkPhoneRegister(register = {
             pass, userBean->
             //当前手机号已注册
+            checkUserStatus(userBean)
             if (pass.toMd5() == userBean.pass){
                 //登录成功
                 responseBean.data = buildUserMapWithToken(userBean)
@@ -100,38 +100,48 @@ class UserController : BaseController(){
         //检测以及获取参数
         val paramsMap = convertParams("nickName", "phone", "portrait", "signature",
                 "extension", "email")
-        //获取用户信息并回填
+        //获取用户信息校验并回填
         getUserInfoByToken()?.apply {
-            paramsMap.safeGet("nickName"){
+            //检测用户状态
+            checkUserStatus()
+            paramsMap.safeNotEmptyGet("nickName"){
                 if (it.isUsername())
                     this.nickName = it
+                else
+                    throw ParamsErrorException()
+
             }
-            paramsMap.safeGet("phone"){
+            paramsMap.safeNotEmptyGet("phone"){
                 if (it.isMobileSimple())
                     this.phone = it
+                else
+                    throw ParamsErrorException()
             }
-            paramsMap.safeGet("portrait"){
+            paramsMap.safeNotEmptyGet("portrait"){
                 this.portrait = it
             }
-            paramsMap.safeGet("signature"){
+            paramsMap.safeNotEmptyGet("signature"){
                 this.signature = it
             }
-            paramsMap.safeGet("extension"){
+            paramsMap.safeNotEmptyGet("extension"){
                 this.extension = it
             }
-            paramsMap.safeGet("email"){
+            paramsMap.safeNotEmptyGet("email"){
                 if (it.isEmail())
                     this.email = it
+                else
+                    throw ParamsErrorException()
             }
             //开始更新用户信息
-            val u = this
-            (userService.updateUserById(u)).no {
+            (userService.updateUserById(this)).no {
                 //更新失败
                 responseBean.code = CODE_SERVICE_ERROR
                 responseBean.msg = MSG_SERVICE_ERROR
             }.yes {
                 //更新成功
-                responseBean.data = buildUserMapWithToken(this)
+                responseBean.data = buildUserMapWithToken(this.apply {
+                    userService.decode(this)
+                })
             }
         }
         return responseBean
@@ -143,11 +153,12 @@ class UserController : BaseController(){
      */
     @Login
     @GetMapping("list")
-    fun getAll(): ResponseBean{
+    fun getAllUser():ResponseBean{
         val responseBean = ResponseBean()
-        //检查是否是管理员
         checkAdmin()
-        responseBean.data = userService.findAllUser()
+        //返回所有用户信息
+        val userList = userService.findAllUser()
+        responseBean.data = userList
         return responseBean
     }
 
@@ -160,6 +171,8 @@ class UserController : BaseController(){
         val responseBean = ResponseBean()
         val otherId = getParamsNotEmpty("otherId")
         val status = getParamsNotEmpty("status")
+        //检测是否是管理员更新用户信息
+        checkAdmin()
         //检测otherId
         checkUserId(otherId)
         //管理员不能更新管理员状态
@@ -201,8 +214,23 @@ class UserController : BaseController(){
             }
         }else{
             val token = request.getHeader(KEY_HEADER_TOKEN)
-            if (SendMail.linkExpires(token)){
-                SendMail.remove(token)
+            val type = request.getHeader("type")
+            //浏览器更新
+            if (type == "1"){
+                if (SendMail.linkExpires(token) ){
+                    SendMail.remove(token)
+                    val pass = getParamsNotEmpty("pass")
+                    checkPass(pass)
+                    val update = userService.updatePassByUserId(pass, user?.userId!!)
+                    if (!update){
+                        responseBean.code = CODE_SERVICE_ERROR
+                        responseBean.msg = MSG_SERVICE_ERROR
+                    }
+                }else{
+                    responseBean.code = CODE_SERVICE_ERROR
+                    responseBean.msg = MSG_LINK_EXPIRES
+                }
+            }else{//客户端更新
                 val pass = getParamsNotEmpty("pass")
                 checkPass(pass)
                 val update = userService.updatePassByUserId(pass, user?.userId!!)
@@ -210,10 +238,8 @@ class UserController : BaseController(){
                     responseBean.code = CODE_SERVICE_ERROR
                     responseBean.msg = MSG_SERVICE_ERROR
                 }
-            }else{
-                responseBean.code = CODE_SERVICE_ERROR
-                responseBean.msg = MSG_LINK_EXPIRES
             }
+
         }
         return responseBean
     }
@@ -258,4 +284,5 @@ class UserController : BaseController(){
             put("userInfo", userBean)
         }
     }
+
 }

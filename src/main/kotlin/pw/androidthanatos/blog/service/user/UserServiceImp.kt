@@ -21,29 +21,21 @@ class UserServiceImp : UserService{
     override fun findUserByUserId(userId: String): UserBean? {
         return mUserMapper.findUserById(userId)?.apply {
             //解密信息
-            this.nickName = this.nickName.decodeByBase64()
-            this.phone = this.phone.decodeByBase64()
-            this.email = this.email.decodeByBase64()
+            decode(this)
         }
     }
 
     override fun findUserByPhone(phone: String): UserBean? {
         return mUserMapper.findUserByPhone(phone.toBase64Encode())?.apply {
             //解密信息
-            this.nickName = this.nickName.decodeByBase64()
-            this.phone = this.phone.decodeByBase64()
-            this.email = this.email.decodeByBase64()
+            decode(this)
         }
     }
 
     override fun findAllUser(): List<UserBean> {
         return mUserMapper.findAllUser().map {
-            it.apply {
-                //解密信息
-                this.nickName = this.nickName.decodeByBase64()
-                this.phone = this.phone.decodeByBase64()
-                this.email = this.email.decodeByBase64()
-            }
+            decode(it)
+            it
         }
     }
 
@@ -77,6 +69,18 @@ class UserServiceImp : UserService{
 
     override fun updatePassByUserId(pass: String, userId: String): Boolean {
         return mUserMapper.updatePassByUserId(userId, pass.toMd5()) > 0
+    }
+
+    /**
+     * 解密用户信息
+     */
+    override fun decode(userBean: UserBean){
+        userBean.apply {
+            //解密信息
+            this.nickName = this.nickName.decodeByBase64()
+            this.phone = this.phone.decodeByBase64()
+            this.email = this.email.decodeByBase64()
+        }
     }
 
 }

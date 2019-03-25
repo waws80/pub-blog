@@ -65,4 +65,10 @@ interface UserService {
      * @return [Boolean] true: 成功 false:　失败
      */
     fun updatePassByUserId(pass: String, userId: String): Boolean
+
+    /**
+     * 解密信息
+     * @param userBean 用户信息实体类
+     */
+    fun decode(userBean: UserBean)
 }

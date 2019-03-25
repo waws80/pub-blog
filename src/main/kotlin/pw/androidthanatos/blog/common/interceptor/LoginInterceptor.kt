@@ -55,17 +55,17 @@ class LoginInterceptor : HandlerInterceptor{
      */
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
         super.afterCompletion(request, response, handler, ex)
-        //token 刷新操作
-        getRequestToken(request, handler){
-            if (mTokenUtil.needRefreshToken(it)){
-                val userId = mTokenUtil.getUserIdByToken(it)
-                //刷新后的token,开发者需将其保存起来，以便下次网络请求使用
-                if (userId.isNotEmpty()){
-                    //有效的用户id
-                    response.addHeader(KEY_HEADER_REFRESH_TOKEN, mTokenUtil.createToken(userId))
-                }
-            }
-        }
+        //token 刷新操作(无作用)
+//        getRequestToken(request, handler){
+//            if (mTokenUtil.needRefreshToken(it)){
+//                val userId = mTokenUtil.getUserIdByToken(it)
+//                //刷新后的token,开发者需将其保存起来，以便下次网络请求使用
+//                if (userId.isNotEmpty()){
+//                    //有效的用户id
+//                    response.setHeader(KEY_HEADER_REFRESH_TOKEN, mTokenUtil.createToken(userId))
+//                }
+//            }
+//        }
     }
 
     /**

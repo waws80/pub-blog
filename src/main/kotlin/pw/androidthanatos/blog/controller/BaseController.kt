@@ -3,7 +3,6 @@ package pw.androidthanatos.blog.controller
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import pw.androidthanatos.blog.common.contract.KEY_HEADER_TOKEN
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.extension.isMobileSimple
 import pw.androidthanatos.blog.common.extension.isPassWord
@@ -12,9 +11,9 @@ import pw.androidthanatos.blog.entity.UserBean
 import pw.androidthanatos.blog.service.user.UserService
 import javax.servlet.http.HttpServletRequest
 import pw.androidthanatos.blog.common.annotation.Login
-import pw.androidthanatos.blog.common.contract.TYPE_USER_ADMIN
-import pw.androidthanatos.blog.common.contract.TYPE_USER_NORMAL
-import pw.androidthanatos.blog.common.exception.PermissionException
+import pw.androidthanatos.blog.common.contract.*
+import pw.androidthanatos.blog.common.exception.BlackException
+import pw.androidthanatos.blog.common.exception.PermissionDeniedException
 import pw.androidthanatos.blog.common.extension.isUsername
 
 /**
@@ -117,9 +116,25 @@ abstract class BaseController {
      */
     protected fun checkAdmin(){
         val user = getUserInfoByToken()
-        if (user == null || user.admin != TYPE_USER_ADMIN){
-            throw PermissionException()
+        if (user == null || user.admin == TYPE_USER_NORMAL){
+            throw PermissionDeniedException()
         }
+    }
+
+    /**
+     * 检测用户是否被拉黑禁止登陆
+     */
+    protected fun checkUserStatus(userBean: UserBean? = null){
+        if (userBean!= null){
+            if(userBean.black == STATUS_USER_BLACK)
+                throw BlackException()
+        }else{
+            val user = getUserInfoByToken()
+            if (user == null || user.black == STATUS_USER_BLACK){
+                throw BlackException()
+            }
+        }
+
     }
 
     /**

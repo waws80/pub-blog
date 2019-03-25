@@ -122,8 +122,8 @@ object RegexUtil {
      * @return `true`: 匹配<br></br>`false`: 不匹配
      */
     @JvmStatic
-    fun isUsername(input: CharSequence): Boolean {
-        return isMatch(RegexConstants.REGEX_USERNAME, input)
+    fun isUsername(input: CharSequence, min: Int = 2, max: Int = 20): Boolean {
+        return isMatch(RegexConstants.REGEX_USERNAME(min, max), input)
     }
 
     /**

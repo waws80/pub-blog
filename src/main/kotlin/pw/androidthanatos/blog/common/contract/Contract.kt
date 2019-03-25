@@ -6,7 +6,7 @@ package pw.androidthanatos.blog.common.contract
 const val KEY_HEADER_TOKEN = "token"
 
 //刷新token的key
-const val KEY_HEADER_REFRESH_TOKEN = "refresh_token"
+const val KEY_HEADER_REFRESH_TOKEN = "Refresh-token"
 
 //===================== code and msg=================
 
@@ -28,8 +28,14 @@ const val MSG_PHONE_NOT_REGISTER = "手机号未注册"
 const val CODE_LOGIN_PARAMS_ERROR = 2004
 const val MSG_LOGIN_PARAMS_ERROR = "登录信息出错"
 
-const val CODE_HEADER_NO_TOKEN = 2002
+const val CODE_HEADER_NO_TOKEN = 2005
 const val MSG_HEADER_NO_TOKEN = "请求token不存在"
+
+const val CODE_PERMISSION_DENIED = 2006
+const val MSG_PERMISSION_DENIED = "权限不足"
+
+const val CODE_USER_STATUS_BLACK = 2007
+const val MSG_USER_STATUS_BLACK = "用户被拉黑"
 
 const val CODE_PATH_NOT_FOUND = 3000
 const val MSG_PATH_NOT_FOUND = "请求资源不存在"

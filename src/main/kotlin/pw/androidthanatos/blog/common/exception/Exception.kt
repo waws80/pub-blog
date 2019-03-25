@@ -26,8 +26,15 @@ class TokenTimeOutException(val code: Int = CODE_TOKEN_ERROR,
 class ParamsErrorException(val code: Int = CODE_PARAMS_ERROR,
                            val msg: String = MSG_PARAMS_ERROR): Exception(msg)
 
+
 /**
  * 权限不足异常
  */
-class PermissionException(val code: Int = CODE_PERMISSION_ERROR,
-                          val msg: String = MSG_PERMISSION_ERROR): Exception(msg)
+class PermissionDeniedException(val code: Int = CODE_PERMISSION_DENIED,
+                                val msg: String = MSG_PERMISSION_DENIED): Exception(msg)
+
+/**
+ * 用户被拉黑
+ */
+class BlackException(val code: Int = CODE_USER_STATUS_BLACK,
+                     val msg: String = MSG_USER_STATUS_BLACK): Exception(msg)

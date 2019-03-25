@@ -65,6 +65,8 @@ object RegexConstants {
      * 正则：用户名，取值范围为 a-z,A-Z,0-9,"_",汉字，不能以"_"结尾,用户名必须是 6-20 位
      */
     const val REGEX_USERNAME = "^[\\w\\u4e00-\\u9fa5]{6,20}(?<!_)$"
+
+    fun REGEX_USERNAME(min: Int = 2, max: Int = 20) = "^[\\w\\u4e00-\\u9fa5]{$min,$max}(?<!_)$"
     /**
      * 正则：yyyy-MM-dd 格式的日期校验，已考虑平闰年
      */

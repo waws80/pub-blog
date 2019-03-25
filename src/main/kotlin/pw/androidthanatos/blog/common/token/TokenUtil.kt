@@ -107,7 +107,7 @@ class TokenUtil {
     fun needRefreshToken(token: String?): Boolean{
         if (isTokenValidity(token) && !isTokenExpires(token)){
             val expiresAt = getJWTVerify(token!!).expiresAt.time
-            if (System.currentTimeMillis() - expiresAt < 60 * 60 * 24){
+            if (System.currentTimeMillis() - expiresAt < 60 * 60 * 48){
                 //如果token一天内将会过期则需要刷新
                 return true
             }
