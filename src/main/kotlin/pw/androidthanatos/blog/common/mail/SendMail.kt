@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Component
+import pw.androidthanatos.blog.EMAIL_HTML_PATH
 import pw.androidthanatos.blog.common.extension.safeUse
 import java.util.concurrent.ConcurrentHashMap
 
@@ -14,8 +15,6 @@ class SendMail {
     companion object {
 
         private val concurrentHashMap = ConcurrentHashMap<String, Boolean>()
-
-        private const val resetPath = "http://localhost:8080/reSetPass.html"
 
         /**
          * 链接是否已经使用过
@@ -61,8 +60,7 @@ class SendMail {
      */
     fun sendResetPassMail(to: String, token: String){
         send(to, "个人博客公开接口项目--重置密码",
-                "$resetPath?$token")
+                "$EMAIL_HTML_PATH?$token")
         put(token)
-
     }
 }

@@ -15,6 +15,7 @@ import pw.androidthanatos.blog.common.contract.*
 import pw.androidthanatos.blog.common.exception.BlackException
 import pw.androidthanatos.blog.common.exception.PermissionDeniedException
 import pw.androidthanatos.blog.common.extension.isUsername
+import pw.androidthanatos.blog.common.upload.UploadFileUtil
 
 /**
  * 控制器基类
@@ -30,6 +31,9 @@ abstract class BaseController {
 
     @Autowired
     protected lateinit var tokenUtil: TokenUtil
+
+    @Autowired
+    protected lateinit var uploadFileUtil: UploadFileUtil
 
     /**
      * 获取参数可为空

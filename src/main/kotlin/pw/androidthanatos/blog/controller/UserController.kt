@@ -2,6 +2,7 @@ package pw.androidthanatos.blog.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartHttpServletRequest
 import pw.androidthanatos.blog.common.annotation.ApiVersion
 import pw.androidthanatos.blog.common.annotation.Login
 import pw.androidthanatos.blog.common.contract.*
@@ -9,6 +10,7 @@ import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.extension.*
 import pw.androidthanatos.blog.common.mail.SendMail
 import pw.androidthanatos.blog.common.response.ResponseBean
+import pw.androidthanatos.blog.common.upload.FileType
 import pw.androidthanatos.blog.common.util.createId
 import pw.androidthanatos.blog.entity.UserBean
 import kotlin.collections.HashMap
@@ -95,10 +97,10 @@ class UserController : BaseController(){
      */
     @Login
     @PutMapping("update")
-    fun update(): ResponseBean{
+    fun update(req: MultipartHttpServletRequest): ResponseBean{
         val responseBean = ResponseBean()
         //检测以及获取参数
-        val paramsMap = convertParams("nickName", "phone", "portrait", "signature",
+        val paramsMap = convertParams("nickName", "phone", "signature",
                 "extension", "email")
         //获取用户信息校验并回填
         getUserInfoByToken()?.apply {
@@ -117,9 +119,6 @@ class UserController : BaseController(){
                 else
                     throw ParamsErrorException()
             }
-            paramsMap.safeNotEmptyGet("portrait"){
-                this.portrait = it
-            }
             paramsMap.safeNotEmptyGet("signature"){
                 this.signature = it
             }
@@ -131,6 +130,17 @@ class UserController : BaseController(){
                     this.email = it
                 else
                     throw ParamsErrorException()
+            }
+            //获取头像
+            val portraitMap = uploadFileUtil.uploadFile(req, this)
+            val portraitPair = portraitMap["portrait"]
+            if (portraitPair != null){
+                if (portraitPair.second == FileType.IMG){
+                    this.portrait = portraitPair.first
+                }else{
+                    throw ParamsErrorException()
+                }
+
             }
             //开始更新用户信息
             (userService.updateUserById(this)).no {

@@ -17,6 +17,8 @@ spring:
   #启用静态资源html
   resources:
     add-mappings: true
+  thymeleaf:
+    cache: false
   datasource:
     username: root
     password: waws19920810!
@@ -34,5 +36,9 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
         debug: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1GB
 mybatis:
   type-aliases-package: pw.androidthanatos.blog.entity

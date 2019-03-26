@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import pw.androidthanatos.blog.TOKEN_EXPIRES_DAY
 import pw.androidthanatos.blog.common.extension.logi
 import pw.androidthanatos.blog.service.user.UserService
 import java.util.*
@@ -21,9 +22,9 @@ class TokenUtil {
         //token秘钥
         private const val SECRET = "pw.androidthanatos.blog:secret-token"
 
-        //token 过期时间 1天
+        //token 过期时间 天
         private const val CalendarField = Calendar.DATE
-        private const val CalendarInterval = 1
+        private const val CalendarInterval = TOKEN_EXPIRES_DAY
 
         private const val KEY_USER_ID = "userId"
 
@@ -107,7 +108,7 @@ class TokenUtil {
     fun needRefreshToken(token: String?): Boolean{
         if (isTokenValidity(token) && !isTokenExpires(token)){
             val expiresAt = getJWTVerify(token!!).expiresAt.time
-            if (System.currentTimeMillis() - expiresAt < 60 * 60 * 48){
+            if (System.currentTimeMillis() - expiresAt < 60 * 60 * 24 * CalendarInterval - 1){
                 //如果token一天内将会过期则需要刷新
                 return true
             }

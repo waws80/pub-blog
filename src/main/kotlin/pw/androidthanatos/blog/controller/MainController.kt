@@ -1,9 +1,11 @@
 package pw.androidthanatos.blog.controller
 
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartHttpServletRequest
 import pw.androidthanatos.blog.common.annotation.Login
 import pw.androidthanatos.blog.common.contract.CODE_PARAMS_ERROR
 import pw.androidthanatos.blog.common.extension.logi
@@ -16,6 +18,8 @@ import pw.androidthanatos.blog.common.token.TokenUtil
 @RestController
 class MainController : BaseController(){
 
+
+
     /**
      * 欢迎 api
      */
@@ -25,22 +29,15 @@ class MainController : BaseController(){
     }
 
     /**
-     * 发送邮件
-     * type: １：发送修改密码邮件
+     * 上传文件工具接口
      */
     @Login
-    @PostMapping("sendMail")
-    fun sendMail(): ResponseBean{
+    @PostMapping("upload")
+    fun upload(req: MultipartHttpServletRequest): ResponseBean{
         val responseBean = ResponseBean()
-        val type = getParamsNotEmpty("type")
-        val userEmail = getUserInfoByToken()?.email
-        if (userEmail.isNullOrEmpty()){
-            responseBean.code = CODE_PARAMS_ERROR
-            responseBean.msg = "还未绑定邮箱"
-        }else{
-            when(type){
-                "1" -> { sendMail()}
-            }
+        val map = uploadFileUtil.uploadFile(req, getUserInfoByToken()!!)
+        responseBean.data = HashMap<String, Any>().apply {
+            put("files", map.map { it.value.first })
         }
         return responseBean
     }

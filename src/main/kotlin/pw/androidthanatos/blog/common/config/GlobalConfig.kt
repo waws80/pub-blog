@@ -7,7 +7,9 @@ import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.GsonHttpMessageConverter
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import pw.androidthanatos.blog.FILE_PATH
 import pw.androidthanatos.blog.common.interceptor.LoginInterceptor
 
 /**
@@ -52,5 +54,12 @@ class GlobalConfig : WebMvcConfigurer {
 //                .allowedOrigins("http://192.168.1.97")
 //                .allowedMethods("GET", "POST")
 //                .allowCredentials(false).maxAge(3600);
+    }
+
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/files/**")
+                .addResourceLocations("file://$FILE_PATH")
+        super.addResourceHandlers(registry)
     }
 }
