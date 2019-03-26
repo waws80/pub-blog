@@ -74,3 +74,31 @@ const val STATUS_USER_BLACK = 2 //拉黑用户
 const val TYPE_USER_NORMAL = 1 // 普通用户
 
 const val TYPE_USER_ADMIN = 2 //管理员用户
+
+
+//========================= to do type ======================
+
+const val TODO_TYPE_NORMAL = 1 //普通
+
+const val TODO_TYPE_STUDY = 2 //学习
+
+const val TODO_TYPE_WORK = 3 //工作
+
+const val TODO_TYPE_PLAY = 4 //娱乐
+
+const val TODO_TYPE_FAMILY = 5 //家庭
+
+const val TODO_TYPE_OTHER = 6 //其他
+
+
+const val TODO_LIST_NORMAL = 1 //普通
+
+const val TODO_LIST_TOP = 2 //置顶
+
+const val TODO_DEL_NORMAL = 1//没有删除
+
+const val TODO_DEL_DEL = 2//已经删除
+
+const val TODO_REMIND_NORMAL = 1 //不提醒
+
+const val TODO_REMIND_REMIND = 2 //提醒

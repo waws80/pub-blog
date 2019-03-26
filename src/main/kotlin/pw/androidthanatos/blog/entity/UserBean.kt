@@ -19,7 +19,7 @@ data class UserBean(var userId: String,//用户唯一id
                     @UserStatus
                     var black: Int = STATUS_USER_NORMAL,//用户状态
                     var email: String = "",//用户邮箱
-                    var createDate: Date = Date(),//用户注册时间
+                    var createDate: Long = Date().time,//用户注册时间
                     @UserType
                     var admin: Int = TYPE_USER_NORMAL //用户类型
 )

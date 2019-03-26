@@ -15,6 +15,9 @@ import pw.androidthanatos.blog.common.util.createId
 import pw.androidthanatos.blog.entity.UserBean
 import kotlin.collections.HashMap
 
+/**
+ * 用户控制器
+ */
 @RestController
 @ApiVersion(1)
 @RequestMapping("/user/{version}")
@@ -26,7 +29,7 @@ class UserController : BaseController(){
     /**
      * 用户接口　index
      */
-    @GetMapping
+    @GetMapping("index")
     fun index() = ResponseBean(data = "欢迎访问用户接口")
 
     /**
@@ -100,12 +103,10 @@ class UserController : BaseController(){
     fun update(req: MultipartHttpServletRequest): ResponseBean{
         val responseBean = ResponseBean()
         //检测以及获取参数
-        val paramsMap = convertParams("nickName", "phone", "signature",
+        val paramsMap = convertParamsToMap("nickName", "phone", "signature",
                 "extension", "email")
         //获取用户信息校验并回填
         getUserInfoByToken()?.apply {
-            //检测用户状态
-            checkUserStatus()
             paramsMap.safeNotEmptyGet("nickName"){
                 if (it.isUsername())
                     this.nickName = it

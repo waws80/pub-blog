@@ -153,7 +153,7 @@ abstract class BaseController {
      * @param keys 参数key
      * @return [HashMap] 返回对应的key value
      */
-    protected fun convertParams(vararg keys: String): HashMap<String, String>{
+    protected fun convertParamsToMap(vararg keys: String): HashMap<String, String>{
         val map = HashMap<String, String>()
         keys.forEach {
             val value = request.getParameter(it)?:""
@@ -169,6 +169,8 @@ abstract class BaseController {
      */
     protected fun getUserInfoByToken(): UserBean?{
         val  token = request.getHeader(KEY_HEADER_TOKEN)
-        return userService.findUserByUserId(tokenUtil.getUserIdByToken(token))
+        val user = userService.findUserByUserId(tokenUtil.getUserIdByToken(token))
+        checkUserStatus(user)
+        return user
     }
 }

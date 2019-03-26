@@ -10,7 +10,6 @@ import pw.androidthanatos.blog.common.contract.STATUS_USER_BLACK
 /**
  * 用户信息查询
  */
-@Mapper
 @Component
 interface UserMapper {
 

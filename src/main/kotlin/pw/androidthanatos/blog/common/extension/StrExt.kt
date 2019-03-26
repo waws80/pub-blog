@@ -35,6 +35,19 @@ fun String.decodeByBase64(sysEncode: Boolean = true): String{
     return base64Decode(this, sysEncode)
 }
 
+fun String?.toTimeStamp(error:()->Unit): Long{
+    if(isNullOrEmpty()){
+        error.invoke()
+    }else{
+        try {
+            return this?.toLong()!!
+        }catch (e: Exception){
+            error.invoke()
+        }
+    }
+    return 0
+}
+
 /**
  * 判断是否符合密码
  */

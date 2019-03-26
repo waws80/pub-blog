@@ -90,3 +90,41 @@ annotation class UserStatus
 @Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
 annotation class UserType
+
+/**
+ * 待办事项类型
+ */
+@IntDef(TODO_TYPE_NORMAL,
+        TODO_TYPE_STUDY,
+        TODO_TYPE_WORK,
+        TODO_TYPE_PLAY,
+        TODO_TYPE_FAMILY,
+        TODO_TYPE_OTHER)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class TodoType
+
+/**
+ * 待办事项列表排序类型
+ */
+@IntDef(TODO_LIST_NORMAL, TODO_LIST_TOP)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class TodoListType
+
+/**
+ * 待办事项删除类型
+ */
+@IntDef(TODO_DEL_NORMAL, TODO_DEL_DEL)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class TodoDelType
+
+/**
+ * 待办事项提醒类型
+ */
+@IntDef(TODO_REMIND_NORMAL, TODO_REMIND_REMIND)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class TodoRemindType
+
