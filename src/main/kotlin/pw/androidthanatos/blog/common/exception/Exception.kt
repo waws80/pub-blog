@@ -38,3 +38,15 @@ class PermissionDeniedException(val code: Int = CODE_PERMISSION_DENIED,
  */
 class BlackException(val code: Int = CODE_USER_STATUS_BLACK,
                      val msg: String = MSG_USER_STATUS_BLACK): Exception(msg)
+
+/**
+ * 非法请求异常
+ */
+class IllegalRequestException(val code: Int = CODE_ILLEGAL_REQUEST,
+                              val msg: String = MSG_ILLEGAL_REQUEST): Exception(msg)
+
+/**
+ * 资源不存在异常
+ */
+class ResNotFoundException(val code: Int = CODE_RES_NOT_FOUND,
+                           val msg: String = MSG_RES_NOT_FOUND): Exception(msg)

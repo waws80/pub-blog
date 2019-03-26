@@ -1,13 +1,12 @@
 package pw.androidthanatos.blog.controller
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import pw.androidthanatos.blog.common.annotation.*
 import pw.androidthanatos.blog.common.contract.*
+import pw.androidthanatos.blog.common.exception.IllegalRequestException
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
+import pw.androidthanatos.blog.common.exception.ResNotFoundException
 import pw.androidthanatos.blog.common.extension.toTimeStamp
 import pw.androidthanatos.blog.common.response.ResponseBean
 import pw.androidthanatos.blog.common.util.createId
@@ -36,7 +35,7 @@ class TodoController : BaseController(){
     @Login
     @PostMapping("addTodo")
     fun addTodo(): ResponseBean{
-        val responseBean = ResponseBean()
+        var responseBean = ResponseBean()
 
         val paramsMap = convertParamsToMap("todoTitle",
                 "todoContent","todoPlannedFinishDate", "todoType",
@@ -53,11 +52,86 @@ class TodoController : BaseController(){
 
         val add = mTodoService.addTodo(todoBean)
         if (!add){
-            responseBean.code = CODE_SERVICE_ERROR
-            responseBean.msg = MSG_SERVICE_ERROR
+            responseBean = ResponseBean.serviceError()
         }
         return responseBean
     }
+
+
+    /**
+     * 更新待办事项删除状态
+     */
+    @Login
+    @PutMapping("updateDelType")
+    fun updateTodoDelType(): ResponseBean{
+        var responseBean = ResponseBean()
+        //校验参数
+        val paramsMap = convertParamsToMap("todoId", "todoDel")
+        checkParamsByKey(paramsMap, "todoId", "todoDel")
+        //获取参数
+        val todoId = paramsMap["todoId"] as String
+        val todoDelType = parseTodoDel(paramsMap["todoDel"])
+
+        //判断当前todo属于当前用户
+        val currentUserId = getUserInfoByToken()?.userId!!
+        val todo = mTodoService.findTodoById(todoId)
+        //非法请求
+        if (todo == null || todo.todoUserId != currentUserId){
+            throw ResNotFoundException()
+        }else{
+            //更新待办事项
+            val update = mTodoService.updateTodoDelStatus(todoId, todoDelType)
+            if (!update){
+                responseBean = ResponseBean.serviceError()
+            }
+        }
+        return responseBean
+    }
+
+
+    /**
+     * 完成了待办事项
+     */
+    @Login
+    @PutMapping("finish")
+    fun finishTodo(): ResponseBean{
+
+        var responseBean = ResponseBean()
+        //校验参数
+        val todoId = getParamsNotEmpty("todoId")
+        //判断当前todo属于当前用户
+        val currentUserId = getUserInfoByToken()?.userId!!
+        val todo = mTodoService.findTodoById(todoId)
+        //非法请求
+        if (todo == null || todo.todoUserId != currentUserId){
+            throw ResNotFoundException()
+        }else{
+            //更新完成状态
+            val finish = mTodoService.updateTodoFinish(todoId, Date().time)
+
+            if (!finish){
+                responseBean = ResponseBean.serviceError()
+            }
+        }
+
+        return responseBean
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

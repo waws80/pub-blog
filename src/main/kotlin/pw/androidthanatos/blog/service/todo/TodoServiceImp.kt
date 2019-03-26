@@ -39,7 +39,7 @@ class TodoServiceImp  : TodoService{
         return mTodoMapper.updateTodoInfo(todoId, todoContent.toBase64Encode(), todoTop, todoPlannedFinishDate, todoRemind) > 0
     }
 
-    override fun findTodoById(todoId: String): TodoBean {
+    override fun findTodoById(todoId: String): TodoBean? {
         return mTodoMapper.findTodoById(todoId).apply {
             decode(this)
         }
@@ -61,15 +61,15 @@ class TodoServiceImp  : TodoService{
         }
     }
 
-    override fun encode(bean: TodoBean): TodoBean {
-        return bean.apply {
+    override fun encode(bean: TodoBean?): TodoBean? {
+        return bean?.apply {
             this.todoTitle = this.todoTitle.toBase64Encode()
             this.todoContent = this.todoContent.toBase64Encode()
         }
     }
 
-    override fun decode(bean: TodoBean): TodoBean {
-        return bean.apply {
+    override fun decode(bean: TodoBean?): TodoBean? {
+        return bean?.apply {
             this.todoTitle = this.todoTitle.decodeByBase64()
             this.todoContent = this.todoContent.decodeByBase64()
         }

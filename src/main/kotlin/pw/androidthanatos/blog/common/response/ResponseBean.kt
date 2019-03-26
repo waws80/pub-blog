@@ -2,7 +2,9 @@ package pw.androidthanatos.blog.common.response
 
 import pw.androidthanatos.blog.common.annotation.ResponseCode
 import pw.androidthanatos.blog.common.annotation.ResponseMsg
+import pw.androidthanatos.blog.common.contract.CODE_SERVICE_ERROR
 import pw.androidthanatos.blog.common.contract.CODE_SUCCESS
+import pw.androidthanatos.blog.common.contract.MSG_SERVICE_ERROR
 import pw.androidthanatos.blog.common.contract.MSG_SUCCESS
 
 /**
@@ -14,5 +16,15 @@ data class ResponseBean (@ResponseCode
                          var msg: String = MSG_SUCCESS, //相应信息
                          var data: Any? = null, //相应数据
                          val timestamp: Long = System.currentTimeMillis() //当前时间戳
-)
+){
+
+    companion object {
+
+        /**
+         * 服务器异常响应
+         */
+        fun serviceError() = ResponseBean(code = CODE_SERVICE_ERROR,
+                msg = MSG_SERVICE_ERROR)
+    }
+}
 

@@ -32,10 +32,12 @@ annotation class ApiVersion(val value: Int)
         CODE_USER_STATUS_BLACK,
         CODE_HEADER_NO_TOKEN,
         CODE_PATH_NOT_FOUND,
+        CODE_RES_NOT_FOUND,
         CODE_TOKEN_ERROR,
         CODE_TOKEN_TIME_OUT,
         CODE_PERMISSION_ERROR,
-        CODE_SERVICE_ERROR)
+        CODE_SERVICE_ERROR,
+        CODE_ILLEGAL_REQUEST)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ResponseCode
@@ -53,10 +55,12 @@ annotation class ResponseCode
         MSG_PERMISSION_DENIED,
         MSG_USER_STATUS_BLACK,
         MSG_PATH_NOT_FOUND,
+        MSG_RES_NOT_FOUND,
         MSG_TOKEN_ERROR,
         MSG_TOKEN_TIME_OUT,
         MSG_PERMISSION_ERROR,
-        MSG_SERVICE_ERROR)
+        MSG_SERVICE_ERROR,
+        MSG_ILLEGAL_REQUEST)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ResponseMsg

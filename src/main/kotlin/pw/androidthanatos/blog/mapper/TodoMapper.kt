@@ -92,7 +92,7 @@ interface TodoMapper {
     @Select("select *" +
             "from tb_todo " +
             "where todoId = #{todoId}")
-    fun findTodoById(todoId: String): TodoBean
+    fun findTodoById(todoId: String): TodoBean?
 
     /**
      * 查找待办事项
@@ -116,4 +116,5 @@ interface TodoMapper {
             "from tb_todo " +
             "where todoUserId = #{todoUserId} and todoType = #{todoType}")
     fun findTodoByType(todoUserId: String, @TodoType todoType: Int): List<TodoBean>
+
 }

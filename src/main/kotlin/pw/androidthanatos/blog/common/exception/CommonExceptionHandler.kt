@@ -37,10 +37,14 @@ class CommonExceptionHandler{
             is TokenTimeOutException -> ResponseBean(e.code, e.msg)
             //请求路径出错404
             is NoHandlerFoundException -> ResponseBean(CODE_PATH_NOT_FOUND, MSG_PATH_NOT_FOUND, request.requestURI)
+            //请求资源不存在
+            is ResNotFoundException -> ResponseBean(e.code, e.msg)
             //权限不足
             is PermissionDeniedException -> ResponseBean(e.code, e.msg)
             //用户被拉黑
             is BlackException -> ResponseBean(e.code, e.msg)
+            //非法请求异常
+            is IllegalRequestException -> ResponseBean(e.code, e.msg)
             //服务器异常
             else ->ResponseBean(CODE_SERVICE_ERROR, MSG_SERVICE_ERROR)
         }

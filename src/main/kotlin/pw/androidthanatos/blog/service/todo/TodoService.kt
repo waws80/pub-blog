@@ -52,7 +52,7 @@ interface TodoService {
      * 查找待办事项
      * @param todoId 待办事项id
      */
-    fun findTodoById(todoId: String): TodoBean
+    fun findTodoById(todoId: String): TodoBean?
 
     /**
      * 查找待办事项
@@ -76,11 +76,11 @@ interface TodoService {
      * 加密待办事项实体类
      * @param bean
      */
-    fun encode(bean: TodoBean): TodoBean
+    fun encode(bean: TodoBean?): TodoBean?
 
     /**
      * 解密待办事项实体类
      * @param bean
      */
-    fun decode(bean: TodoBean): TodoBean
+    fun decode(bean: TodoBean?): TodoBean?
 }
