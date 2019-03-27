@@ -267,7 +267,6 @@ class TodoController : BaseController(){
                 }
 
             }).process()
-
     
 
     /**
