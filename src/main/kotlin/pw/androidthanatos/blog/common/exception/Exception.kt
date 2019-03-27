@@ -50,3 +50,9 @@ class IllegalRequestException(val code: Int = CODE_ILLEGAL_REQUEST,
  */
 class ResNotFoundException(val code: Int = CODE_RES_NOT_FOUND,
                            val msg: String = MSG_RES_NOT_FOUND): Exception(msg)
+
+/**
+ * 服务器异常
+ */
+class ServiceErrorException(val code: Int = CODE_SERVICE_ERROR,
+                            val msg: String = MSG_SERVICE_ERROR): Exception(msg)

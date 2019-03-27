@@ -7,7 +7,5 @@ import java.util.*
 
 fun main(){
 
-    "R".chars().forEach {
-        print(it)
-    }
+    println(System.currentTimeMillis())
 }

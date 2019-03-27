@@ -7,13 +7,18 @@ import pw.androidthanatos.blog.common.contract.*
 import pw.androidthanatos.blog.common.exception.IllegalRequestException
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.exception.ResNotFoundException
+import pw.androidthanatos.blog.common.exception.ServiceErrorException
+import pw.androidthanatos.blog.common.extension.safeNotEmptyGet
 import pw.androidthanatos.blog.common.extension.toTimeStamp
 import pw.androidthanatos.blog.common.response.ResponseBean
+import pw.androidthanatos.blog.common.response.ResponseHandle
+import pw.androidthanatos.blog.common.response.ResponseWrapper
 import pw.androidthanatos.blog.common.util.createId
 import pw.androidthanatos.blog.entity.TodoBean
 import pw.androidthanatos.blog.service.todo.TodoService
-import java.text.DateFormat
 import java.util.*
+import javax.servlet.http.HttpServletRequest
+import kotlin.collections.HashMap
 
 /**
  * 待办事项工具类
@@ -106,6 +111,9 @@ class TodoController : BaseController(){
         if (todo == null || todo.todoUserId != currentUserId){
             throw ResNotFoundException()
         }else{
+            if (todo.todoFinishDate != null){
+                throw ResNotFoundException()
+            }
             //更新完成状态
             val finish = mTodoService.updateTodoFinish(todoId, Date().time)
 
@@ -113,13 +121,113 @@ class TodoController : BaseController(){
                 responseBean = ResponseBean.serviceError()
             }
         }
-
         return responseBean
     }
 
 
+    /**
+     * 更新待办事项是否置顶
+     */
+    @Login
+    @PutMapping("updateTop")
+    fun updateTodoTop(): ResponseBean{
+        return ResponseWrapper(request, object :ResponseHandle<HttpServletRequest>{
+            override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                params.putAll(getParams(request,"todoId", "todoTop"))
+                checkEmpty(params, "todoId", "todoTop")
+
+                tags["todo"] = checkTodo(params.safeNotEmptyGet("todoId")).apply {
+                    this.todoTop = parseTodoTop(params["todoTop"])
+                    checkFinish(this)
+                }
+            }
+
+            override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                (tags["todo"] as TodoBean).apply {
+                    val update = mTodoService.updateTodoTop(todoId, todoTop)
+                    if (!update){
+                        throw ServiceErrorException()
+                    }
+                }
+
+            }
+
+        }).process()
+    }
 
 
+    /**
+     * 更新待办事项信息
+     */
+    @Login
+    @PutMapping("updateInfo")
+    fun updateTodoInfo() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    params.putAll(getParams(request, "todoId", "todoContent", "todoTop",
+                            "todoPlannedFinishDate", "todoRemind"))
+                    checkEmpty(params,"todoId", "todoContent")
+                    tags["todo"] = checkTodo(params.safeNotEmptyGet("todoId")).apply {
+                        //检查完成状态
+                        checkFinish(this)
+                        //设置参数
+                        this.todoContent = params.safeNotEmptyGet("todoContent")
+                        notEmptyUse(params["todoTop"]){
+                            this.todoTop = parseTodoTop(it)
+                        }
+                        notEmptyUse(params["todoPlannedFinishDate"]){
+                            this.todoPlannedFinishDate = it.toTimeStamp { throw ParamsErrorException() }
+                        }
+                        notEmptyUse(params["todoRemind"]){
+                            this.todoRemind = parseTodoRemind(it)
+                        }
+                    }
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    (tags["todo"] as TodoBean).apply {
+                        val update = mTodoService.updateTodoInfo(todoId, todoContent, todoTop,
+                                todoPlannedFinishDate, todoRemind)
+                        if (!update){
+                            throw ServiceErrorException()
+                        }
+                        responseBean.data = this
+                    }
+                }
+
+            }).process()
+
+
+    /**
+     * 获取待办事项详情
+     */
+    @Login
+    @GetMapping("get")
+    fun findByTodoId() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    val todoId = getParamsNotEmpty("todoId")
+                    tags["todo"] = checkTodo(todoId)
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    responseBean.data = tags["todo"]
+                }
+            }).process()
+
+
+    @GetMapping("all")
+    fun findByUserId() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    tags["data"] = mTodoService.findTodoByUserId(getUserInfoByToken()?.userId!!, 1,1)
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    responseBean.data = tags["data"]
+                }
+
+            }).process()
 
 
 
@@ -207,6 +315,28 @@ class TodoController : BaseController(){
             }
         }catch (e: Exception){
             throw ParamsErrorException()
+        }
+    }
+
+    /**
+     * 检查待办事项是否合法
+     */
+    private fun checkTodo(todoId: String): TodoBean{
+        val user = getUserInfoByToken()!!
+        val todo = mTodoService.findTodoById(todoId)
+        if (todo == null || todo.todoUserId != user.userId){
+            throw ResNotFoundException()
+        }
+        return todo
+    }
+
+    /**
+     * 判断待办事项是否已经完成
+     */
+    private fun checkFinish(todo: TodoBean){
+        if (todo.todoFinishDate != null){
+            //完成的待办事项不可修改
+            throw ResNotFoundException()
         }
     }
 }

@@ -46,6 +46,7 @@ class CommonExceptionHandler{
             //非法请求异常
             is IllegalRequestException -> ResponseBean(e.code, e.msg)
             //服务器异常
+            is ServiceErrorException -> ResponseBean(e.code, e.msg)
             else ->ResponseBean(CODE_SERVICE_ERROR, MSG_SERVICE_ERROR)
         }
     }

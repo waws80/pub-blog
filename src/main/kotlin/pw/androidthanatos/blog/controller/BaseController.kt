@@ -1,5 +1,7 @@
 package pw.androidthanatos.blog.controller
 
+import com.github.pagehelper.PageHelper
+import com.github.pagehelper.PageInfo
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -16,6 +18,7 @@ import pw.androidthanatos.blog.common.exception.BlackException
 import pw.androidthanatos.blog.common.exception.PermissionDeniedException
 import pw.androidthanatos.blog.common.extension.isUsername
 import pw.androidthanatos.blog.common.upload.UploadFileUtil
+import pw.androidthanatos.blog.entity.PageBean
 
 /**
  * 控制器基类
@@ -172,5 +175,12 @@ abstract class BaseController {
         val user = userService.findUserByUserId(tokenUtil.getUserIdByToken(token))
         checkUserStatus(user)
         return user
+    }
+
+
+    protected fun <T> toPage(page: Int, pageSize: Int, data:()-> List<T>): PageBean<T>{
+        PageHelper.startPage<T>(page, pageSize)
+        val info = PageInfo<T>(data.invoke(), pageSize)
+        return PageBean(page, pageSize, info.total.toInt(), info.list)
     }
 }

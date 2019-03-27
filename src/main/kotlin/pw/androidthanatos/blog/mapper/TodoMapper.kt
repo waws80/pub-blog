@@ -44,29 +44,23 @@ interface TodoMapper {
      * @param todoId 待办事项id
      * @param todoDel 待办事项删除状态[TODO_DEL_NORMAL] [TODO_DEL_DEL]
      */
-    @Update("update tb_todo" +
-            "set todoDel = #{todoDel}" +
-            "where todoId = #{todoId}")
+    @Update("update tb_todo set todoDel = #{todoDel} where todoId = #{todoId}")
     fun updateTodoDelStatus(todoId: String, @TodoDelType todoDel: Int):Int
 
     /**
      * 将待办事项设为完成
      * @param todoId 待办事项id
-     * @param finishDate 完成时间
+     * @param todoFinishDate 完成时间
      */
-    @Update("update tb_todo" +
-            "set finishDate = #{finishDate}" +
-            "where todoId = #{todoId}")
-    fun updateTodoFinish(todoId: String, finishDate: Long): Int
+    @Update("update tb_todo set todoFinishDate = #{todoFinishDate} where todoId = #{todoId}")
+    fun updateTodoFinish(todoId: String, todoFinishDate: Long): Int
 
     /**
      * 更新待办事项是否置顶
      * @param todoId　待办事项id
      * @param todoTop 待办事项置顶状态　[TODO_LIST_NORMAL] [TODO_LIST_TOP]
      */
-    @Update("update tb_todo" +
-            "set todoTop = #{todoTop}" +
-            "where todoId = #{todoId}")
+    @Update("update tb_todo set todoTop = #{todoTop} where todoId = #{todoId}")
     fun updateTodoTop(todoId: String, @TodoListType todoTop: Int): Int
 
     /**
@@ -77,12 +71,9 @@ interface TodoMapper {
      * @param todoPlannedFinishDate 待办事项计划完成日期
      * @param todoRemind 待办事项是否提醒　[TODO_REMIND_NORMAL] [TODO_REMIND_REMIND]
      */
-    @Update("update tb_todo" +
-            "set todoContent = #{todoContent}, todoTop = #{todoTop}, " +
-            "todoPlannedFinishDate = #{todoPlannedFinishDate} todoRemind = #{todoRemind}" +
-            "where todoId = #{todoId}")
+    @Update("update tb_todo set todoContent = #{todoContent}, todoTop = #{todoTop}, todoPlannedFinishDate = #{todoPlannedFinishDate}, todoRemind = #{todoRemind} where todoId = #{todoId}")
     fun updateTodoInfo(todoId: String, todoContent: String,
-                       @TodoListType todoTop: Int, todoPlannedFinishDate: Long,
+                       @TodoListType todoTop: Int, todoPlannedFinishDate: Long?,
                        @TodoRemindType todoRemind: Int): Int
 
     /**

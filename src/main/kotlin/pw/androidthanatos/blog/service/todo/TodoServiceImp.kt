@@ -1,9 +1,12 @@
 package pw.androidthanatos.blog.service.todo
 
+import com.github.pagehelper.PageHelper
+import com.github.pagehelper.PageInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import pw.androidthanatos.blog.common.extension.decodeByBase64
 import pw.androidthanatos.blog.common.extension.toBase64Encode
+import pw.androidthanatos.blog.entity.PageBean
 import pw.androidthanatos.blog.entity.TodoBean
 import pw.androidthanatos.blog.mapper.TodoMapper
 import java.sql.Date
@@ -35,7 +38,7 @@ class TodoServiceImp  : TodoService{
         return mTodoMapper.updateTodoTop(todoId, todoTop) > 0
     }
 
-    override fun updateTodoInfo(todoId: String, todoContent: String, todoTop: Int, todoPlannedFinishDate: Long, todoRemind: Int): Boolean {
+    override fun updateTodoInfo(todoId: String, todoContent: String, todoTop: Int, todoPlannedFinishDate: Long?, todoRemind: Int): Boolean {
         return mTodoMapper.updateTodoInfo(todoId, todoContent.toBase64Encode(), todoTop, todoPlannedFinishDate, todoRemind) > 0
     }
 
@@ -45,15 +48,18 @@ class TodoServiceImp  : TodoService{
         }
     }
 
-    override fun findTodoByUserId(todoUserId: String): List<TodoBean> {
-        return mTodoMapper.findTodoByUserId(todoUserId).apply {
+    override fun findTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean> {
+        PageHelper.startPage<TodoBean>(page, pageSize)
+        val list = mTodoMapper.findTodoByUserId(todoUserId).apply {
             forEach {
                 decode(it)
             }
         }
+        val info = PageInfo<TodoBean>(list, pageSize)
+        return PageBean(page, pageSize, info.total.toInt(), info.list)
     }
 
-    override fun findTodoByType(todoUserId: String, todoType: Int): List<TodoBean> {
+    override fun findTodoByType(todoUserId: String, todoType: Int, page: Int, pageSize: Int): List<TodoBean> {
         return mTodoMapper.findTodoByType(todoUserId, todoType).apply {
             forEach {
                 decode(it)

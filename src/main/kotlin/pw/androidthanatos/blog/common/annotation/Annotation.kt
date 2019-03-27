@@ -18,6 +18,14 @@ annotation class Login(val value: Boolean = true)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ApiVersion(val value: Int)
 
+/**
+ * 分页注解
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class PagingQuery(val pageNum: String = "pageNum",
+                             val pageSize: String = "pageSize")
+
 
 /**
  * 标记[ResponseBean] 可使用的　code

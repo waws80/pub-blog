@@ -5,9 +5,10 @@ import pw.androidthanatos.blog.common.annotation.TodoListType
 import pw.androidthanatos.blog.common.annotation.TodoRemindType
 import pw.androidthanatos.blog.common.annotation.TodoType
 import pw.androidthanatos.blog.common.contract.*
+import pw.androidthanatos.blog.entity.PageBean
 import pw.androidthanatos.blog.entity.TodoBean
 
-interface TodoService {
+interface TodoService{
 
     /**
      * 添加一个待办事项
@@ -45,7 +46,7 @@ interface TodoService {
      * @param todoRemind 待办事项是否提醒　[TODO_REMIND_NORMAL] [TODO_REMIND_REMIND]
      */
     fun updateTodoInfo(todoId: String, todoContent: String,
-                       @TodoListType todoTop: Int, todoPlannedFinishDate: Long,
+                       @TodoListType todoTop: Int, todoPlannedFinishDate: Long?,
                        @TodoRemindType todoRemind: Int): Boolean
 
     /**
@@ -58,7 +59,7 @@ interface TodoService {
      * 查找待办事项
      * @param todoUserId 待办事项所属人id
      */
-    fun findTodoByUserId(todoUserId: String): List<TodoBean>
+    fun findTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean>
 
 
     /**
@@ -69,7 +70,7 @@ interface TodoService {
      * [TODO_TYPE_STUDY] [TODO_TYPE_FAMILY]
      * [TODO_TYPE_OTHER]
      */
-    fun findTodoByType(todoUserId: String, @TodoType todoType: Int): List<TodoBean>
+    fun findTodoByType(todoUserId: String, @TodoType todoType: Int, page: Int, pageSize: Int): List<TodoBean>
 
 
     /**
@@ -83,4 +84,5 @@ interface TodoService {
      * @param bean
      */
     fun decode(bean: TodoBean?): TodoBean?
+
 }

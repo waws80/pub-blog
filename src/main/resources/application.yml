@@ -42,3 +42,10 @@ spring:
       max-request-size: 1GB
 mybatis:
   type-aliases-package: pw.androidthanatos.blog.entity
+
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

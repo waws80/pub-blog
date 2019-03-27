@@ -1,5 +1,7 @@
 package pw.androidthanatos.blog.common.extension
 
+import pw.androidthanatos.blog.common.exception.ParamsErrorException
+
 
 fun <R> List<R>?.listSafeUse(): List<R>{
     return if (this.isNullOrEmpty()){
@@ -44,12 +46,14 @@ fun <K, V, M : Map<K, V>> M?.filterEmptyValue(): M{
 /**
  * [Map<K, String>] 安全的获取值
  */
-fun <K, M : Map<K, String>> M?.safeNotEmptyGet(key: K, notEmpty:(String)->Unit){
+fun <K, M : Map<K, String>> M?.safeNotEmptyGet(key: K, notEmpty:(String)->Unit = {}): String{
     @Suppress("UNCHECKED_CAST")
     val value = this.mapSafeUse()[key]
     if (!value.isNullOrEmpty()){
         notEmpty.invoke(value)
+        return value
     }
+    throw ParamsErrorException()
 }
 
 fun <V> List<V>?.filterEmptyValue(save:((V)->Boolean)? = null): List<V>{
