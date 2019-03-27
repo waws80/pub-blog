@@ -177,10 +177,4 @@ abstract class BaseController {
         return user
     }
 
-
-    protected fun <T> toPage(page: Int, pageSize: Int, data:()-> List<T>): PageBean<T>{
-        PageHelper.startPage<T>(page, pageSize)
-        val info = PageInfo<T>(data.invoke(), pageSize)
-        return PageBean(page, pageSize, info.total.toInt(), info.list)
-    }
 }

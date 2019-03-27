@@ -94,6 +94,14 @@ interface TodoMapper {
             "where todoUserId = #{todoUserId}")
     fun findTodoByUserId(todoUserId: String): List<TodoBean>
 
+    /**
+     * 获取当前用户下的待办事项数量
+     */
+    @Select("select count(todoId) " +
+            "from tb_todo " +
+            "where todoUserId = #{todoUserId}")
+    fun findTodoByUserIdCount(todoUserId: String): Long
+
 
     /**
      * 查找用户的某个类型待办事项
@@ -103,9 +111,18 @@ interface TodoMapper {
      * [TODO_TYPE_STUDY] [TODO_TYPE_FAMILY]
      * [TODO_TYPE_OTHER]
      */
-    @Select("select *" +
+    @Select("select * " +
             "from tb_todo " +
             "where todoUserId = #{todoUserId} and todoType = #{todoType}")
     fun findTodoByType(todoUserId: String, @TodoType todoType: Int): List<TodoBean>
+
+
+    /**
+     * 获取特定类型代办事项数量
+     */
+    @Select("select count(todoId) " +
+            "from tb_todo " +
+            "where todoUserId = #{todoUserId} and todoType = #{todoType}")
+    fun findTodoByTypeCount(todoUserId: String, @TodoType todoType: Int): Long
 
 }

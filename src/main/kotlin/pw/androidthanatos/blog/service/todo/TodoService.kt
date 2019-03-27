@@ -70,8 +70,7 @@ interface TodoService{
      * [TODO_TYPE_STUDY] [TODO_TYPE_FAMILY]
      * [TODO_TYPE_OTHER]
      */
-    fun findTodoByType(todoUserId: String, @TodoType todoType: Int, page: Int, pageSize: Int): List<TodoBean>
-
+    fun findTodoByType(todoUserId: String, @TodoType todoType: Int, page: Int, pageSize: Int): PageBean<TodoBean>
 
     /**
      * 加密待办事项实体类

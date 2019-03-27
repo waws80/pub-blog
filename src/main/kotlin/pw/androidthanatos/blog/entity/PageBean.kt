@@ -5,7 +5,7 @@ package pw.androidthanatos.blog.entity
  */
 data class PageBean<T>(var currentPage: Int = 1,
                        var pageSize: Int = 10,
-                       var totalNum: Int = 0,
+                       var totalNum: Long = 0,
 //                       var totalPage: Int = 0,
 //                       var hasMore: Boolean = false,
 //                       var startIndex: Int = 0,

@@ -216,31 +216,59 @@ class TodoController : BaseController(){
             }).process()
 
 
+    /**
+     * 获取当前用户的待办事项
+     */
+    @Login
     @GetMapping("all")
     fun findByUserId() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                    tags["data"] = mTodoService.findTodoByUserId(getUserInfoByToken()?.userId!!, 1,1)
+                    params.putAll(getParams(request, "pageNum", "pageSize"))
+                    params.forEach {
+                        checkInt(it.value)
+                    }
                 }
 
                 override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
-                    responseBean.data = tags["data"]
+
+                    responseBean.data = mTodoService.findTodoByUserId(getUserInfoByToken()?.userId!!,
+                            params.safeNotEmptyGet("pageNum").toInt(),
+                            params.safeNotEmptyGet("pageSize").toInt())
                 }
 
             }).process()
 
 
+    /**
+     * 获取某个类型的待办事项
+     */
+    @Login
+    @GetMapping("type")
+    fun findByType() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    params.putAll(getParams(request, "pageNum", "pageSize", "todoType"))
+                    params.forEach {
+                        checkInt(it.value)
+                    }
+                    params["todoType"] = parseTodoType(params["todoType"]).toString()
 
+                    val userId = getUserInfoByToken()!!.userId
+                    params["userId"] = userId
+                }
 
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    responseBean.data = mTodoService.findTodoByType(
+                            params.safeNotEmptyGet("userId"),
+                            params.safeNotEmptyGet("todoType").toInt(),
+                            params.safeNotEmptyGet("pageNum").toInt(),
+                            params.safeNotEmptyGet("pageSize").toInt())
+                }
 
+            }).process()
 
-
-
-
-
-
-
-
+    
 
     /**
      * 解析待办事项类型标记

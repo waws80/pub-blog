@@ -55,16 +55,19 @@ class TodoServiceImp  : TodoService{
                 decode(it)
             }
         }
-        val info = PageInfo<TodoBean>(list, pageSize)
-        return PageBean(page, pageSize, info.total.toInt(), info.list)
+        val count = mTodoMapper.findTodoByUserIdCount(todoUserId)
+        return PageBean(page, pageSize, count, list)
     }
 
-    override fun findTodoByType(todoUserId: String, todoType: Int, page: Int, pageSize: Int): List<TodoBean> {
-        return mTodoMapper.findTodoByType(todoUserId, todoType).apply {
+    override fun findTodoByType(todoUserId: String, todoType: Int, page: Int, pageSize: Int): PageBean<TodoBean> {
+        PageHelper.startPage<TodoBean>(page, pageSize)
+        val list = mTodoMapper.findTodoByType(todoUserId, todoType).apply {
             forEach {
                 decode(it)
             }
         }
+        val count = mTodoMapper.findTodoByTypeCount(todoUserId, todoType)
+        return PageBean(page, pageSize, count, list)
     }
 
     override fun encode(bean: TodoBean?): TodoBean? {

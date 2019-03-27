@@ -82,9 +82,27 @@ interface ResponseHandle<REQ: HttpServletRequest> {
     }
 
 
+    /**
+     * 非空使用
+     */
     fun notEmptyUse(value: String?, next:(String)->Unit){
         if (value != null && value.isNotEmpty()){
             next.invoke(value)
+        }
+    }
+
+    /**
+     * 判断字符串是否是int
+     */
+    fun checkInt(value: String?){
+        if (value.isNullOrEmpty()){
+            throw ParamsErrorException()
+        }else{
+            try {
+                value.toInt()
+            }catch (e: Exception){
+                throw ParamsErrorException()
+            }
         }
     }
 
