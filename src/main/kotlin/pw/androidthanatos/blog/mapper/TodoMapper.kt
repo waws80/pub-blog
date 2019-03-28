@@ -83,8 +83,8 @@ interface TodoMapper {
      */
     @Select("select *" +
             "from tb_todo " +
-            "where todoId = #{todoId}")
-    fun findTodoById(todoId: String): TodoBean?
+            "where todoId = #{todoId} and todoUserId = #{todoUserId} ")
+    fun findTodoById(todoId: String, todoUserId: String): TodoBean?
 
     /**
      * 查找待办事项

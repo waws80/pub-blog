@@ -1,6 +1,7 @@
 package pw.androidthanatos.blog.service.article
 
 import pw.androidthanatos.blog.entity.ArticleBean
+import pw.androidthanatos.blog.entity.PageBean
 
 interface ArticleService {
 
@@ -77,4 +78,24 @@ interface ArticleService {
      * @param articleId 文章id
      */
     fun findArticleLikeCount(articleId: String): Long
+
+
+    fun findArticleByArticleId(articleId: String): ArticleBean?
+
+    /**
+     * 获取所有的文章
+     */
+    fun findAllArticle(pageNumber: Int, pageSize: Int): PageBean<ArticleBean>
+
+
+    /**
+     * 获取分类文章列表（当二级分类为空的时候，只匹配一级分类）
+     */
+    fun findArticleBySuperType(articleSuperType: String, articleType: String,
+                               pageNumber: Int, pageSize: Int): PageBean<ArticleBean>
+
+    /**
+     * 查找某个用户的所有文章
+     */
+    fun findArticleByUserId(articleUserId: String, pageNumber: Int, pageSize: Int): PageBean<ArticleBean>
 }

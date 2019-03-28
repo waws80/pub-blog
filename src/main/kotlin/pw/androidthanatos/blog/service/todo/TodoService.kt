@@ -53,7 +53,7 @@ interface TodoService{
      * 查找待办事项
      * @param todoId 待办事项id
      */
-    fun findTodoById(todoId: String): TodoBean?
+    fun findTodoById(todoId: String, todoUserId: String): TodoBean?
 
     /**
      * 查找待办事项

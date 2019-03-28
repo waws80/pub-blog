@@ -42,8 +42,8 @@ class TodoServiceImp  : TodoService{
         return mTodoMapper.updateTodoInfo(todoId, todoContent.toBase64Encode(), todoTop, todoPlannedFinishDate, todoRemind) > 0
     }
 
-    override fun findTodoById(todoId: String): TodoBean? {
-        return mTodoMapper.findTodoById(todoId).apply {
+    override fun findTodoById(todoId: String, todoUserId: String): TodoBean? {
+        return mTodoMapper.findTodoById(todoId, todoUserId).apply {
             decode(this)
         }
     }

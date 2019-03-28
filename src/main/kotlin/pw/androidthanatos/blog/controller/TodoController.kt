@@ -81,11 +81,7 @@ class TodoController : BaseController(){
                     params["todoDel"] = parseTodoDel(params["todoDel"]).toString()
                     //判断当前todo属于当前用户
                     val currentUserId = getUserInfoByToken()?.userId!!
-                    val todo = mTodoService.findTodoById(params.safeNotEmptyGet("todoId"))
-                    //非法请求
-                    if (todo == null || todo.todoUserId != currentUserId){
-                        throw ResNotFoundException()
-                    }
+                    mTodoService.findTodoById(params.safeNotEmptyGet("todoId"), currentUserId) ?: throw ResNotFoundException()
                 }
 
                 override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
@@ -115,9 +111,9 @@ class TodoController : BaseController(){
                         val todoId = this.getParamsNotEmpty(request, "todoId")
                         //判断当前todo属于当前用户
                         val currentUserId = getUserInfoByToken()?.userId!!
-                        val todo = mTodoService.findTodoById(todoId)
+                        val todo = mTodoService.findTodoById(todoId, currentUserId)
                         //非法请求
-                        if (todo == null || todo.todoUserId != currentUserId || todo.todoFinishDate != null){
+                        if (todo == null || todo.todoFinishDate != null){
                             throw ResNotFoundException()
                         }
                         params["todoId"] = todoId
@@ -312,11 +308,8 @@ class TodoController : BaseController(){
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
                     val todoId = getParamsNotEmpty(request, "todoId")
-                    val todo = mTodoService.findTodoById(todoId)
                     val userId = getUserInfoByToken()!!.userId
-                    if (todo == null || todo.todoUserId != userId){
-                        throw ParamsErrorException()
-                    }
+                    mTodoService.findTodoById(todoId, userId) ?: throw ResNotFoundException()
                     params["todoId"] = todoId
                 }
 
@@ -349,10 +342,6 @@ class TodoController : BaseController(){
                 }
             }).process()
 
-
-
-
-    
 
     /**
      * 解析待办事项类型标记
@@ -435,11 +424,7 @@ class TodoController : BaseController(){
      */
     private fun checkTodo(todoId: String): TodoBean{
         val user = getUserInfoByToken()!!
-        val todo = mTodoService.findTodoById(todoId)
-        if (todo == null || todo.todoUserId != user.userId){
-            throw ResNotFoundException()
-        }
-        return todo
+        return mTodoService.findTodoById(todoId, user.userId) ?: throw ResNotFoundException()
     }
 
     /**
