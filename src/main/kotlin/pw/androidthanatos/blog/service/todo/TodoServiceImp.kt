@@ -59,6 +59,17 @@ class TodoServiceImp  : TodoService{
         return PageBean(page, pageSize, count, list)
     }
 
+    override fun findDelTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean> {
+        PageHelper.startPage<TodoBean>(page, pageSize)
+        val list = mTodoMapper.findDelTodoByUserId(todoUserId).apply {
+            forEach {
+                decode(it)
+            }
+        }
+        val count = mTodoMapper.findDelTodoByUserIdCount(todoUserId)
+        return PageBean(page, pageSize, count, list)
+    }
+
     override fun findTodoByType(todoUserId: String, todoType: Int, page: Int, pageSize: Int): PageBean<TodoBean> {
         PageHelper.startPage<TodoBean>(page, pageSize)
         val list = mTodoMapper.findTodoByType(todoUserId, todoType).apply {
@@ -68,6 +79,14 @@ class TodoServiceImp  : TodoService{
         }
         val count = mTodoMapper.findTodoByTypeCount(todoUserId, todoType)
         return PageBean(page, pageSize, count, list)
+    }
+
+    override fun realDelByTodoId(todoId: String): Boolean {
+        return mTodoMapper.realDelByTodoId(todoId) > 0
+    }
+
+    override fun realDelByUserId(todoUserId: String): Boolean {
+        return mTodoMapper.realDelByUserId(todoUserId, 2) > 0
     }
 
     override fun encode(bean: TodoBean?): TodoBean? {

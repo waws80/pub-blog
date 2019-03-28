@@ -26,5 +26,14 @@ data class ResponseBean (@ResponseCode
         fun serviceError() = ResponseBean(code = CODE_SERVICE_ERROR,
                 msg = MSG_SERVICE_ERROR)
     }
+
+    /**
+     * 服务器异常响应
+     */
+    fun buildServiceError(): ResponseBean{
+        this.code = CODE_SERVICE_ERROR
+        this.msg = MSG_SERVICE_ERROR
+        return this
+    }
 }
 

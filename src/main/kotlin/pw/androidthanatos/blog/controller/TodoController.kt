@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import pw.androidthanatos.blog.common.annotation.*
 import pw.androidthanatos.blog.common.contract.*
-import pw.androidthanatos.blog.common.exception.IllegalRequestException
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.exception.ResNotFoundException
 import pw.androidthanatos.blog.common.exception.ServiceErrorException
@@ -23,6 +22,7 @@ import kotlin.collections.HashMap
 /**
  * 待办事项工具类
  */
+@Suppress("MVCPathVariableInspection")
 @ApiVersion(1)
 @RestController
 @RequestMapping("todo/{version}")
@@ -39,28 +39,31 @@ class TodoController : BaseController(){
      */
     @Login
     @PostMapping("addTodo")
-    fun addTodo(): ResponseBean{
-        var responseBean = ResponseBean()
+    fun addTodo() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    params.putAll(getParamsMap(request, "todoTitle",
+                            "todoContent","todoPlannedFinishDate", "todoType",
+                            "todoTop", "todoRemind"))
+                    checkEmpty(params, "todoTitle", "todoContent")
+                    val user = getUserInfoByToken()!!
+                    val userId = user.userId
+                    val todoId = createId()
+                    val todoPlannedFinishDate = convertLong(params["todoPlannedFinishDate"])
+                    val todoBean = TodoBean(todoId, params["todoTitle"]!!, params["todoContent"]!!,
+                            Date().time, todoPlannedFinishDate,
+                            parseTodoType(params["todoType"]), null,
+                            parseTodoTop(params["todoTop"]), userId, TODO_DEL_NORMAL, parseTodoRemind(params["todoRemind"]))
+                    tags["todo"] = todoBean
+                }
 
-        val paramsMap = convertParamsToMap("todoTitle",
-                "todoContent","todoPlannedFinishDate", "todoType",
-                "todoTop", "todoRemind")
-
-        checkParamsByKey(paramsMap, "todoTitle", "todoContent", "todoPlannedFinishDate")
-        val user = getUserInfoByToken()!!
-        val userId = user.userId
-        val todoId = createId()
-        val todoBean = TodoBean(todoId, paramsMap["todoTitle"]!!, paramsMap["todoContent"]!!,
-                Date().time, paramsMap["todoPlannedFinishDate"].toTimeStamp { throw ParamsErrorException() },
-                parseTodoType(paramsMap["todoType"]), null,
-                parseTodoTop(paramsMap["todoTop"]), userId, TODO_DEL_NORMAL, parseTodoRemind(paramsMap["todoRemind"]))
-
-        val add = mTodoService.addTodo(todoBean)
-        if (!add){
-            responseBean = ResponseBean.serviceError()
-        }
-        return responseBean
-    }
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    val add = mTodoService.addTodo(tags["todo"] as TodoBean)
+                    if (!add){
+                        responseBean.buildServiceError()
+                    }
+                }
+            }).process()
 
 
     /**
@@ -68,30 +71,34 @@ class TodoController : BaseController(){
      */
     @Login
     @PutMapping("updateDelType")
-    fun updateTodoDelType(): ResponseBean{
-        var responseBean = ResponseBean()
-        //校验参数
-        val paramsMap = convertParamsToMap("todoId", "todoDel")
-        checkParamsByKey(paramsMap, "todoId", "todoDel")
-        //获取参数
-        val todoId = paramsMap["todoId"] as String
-        val todoDelType = parseTodoDel(paramsMap["todoDel"])
+    fun updateTodoDelType() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    //校验参数
+                    params.putAll(getParamsMap(request, "todoId", "todoDel"))
+                    checkEmpty(params, "todoId", "todoDel")
+                    checkInt(params["todoDel"])
+                    params["todoDel"] = parseTodoDel(params["todoDel"]).toString()
+                    //判断当前todo属于当前用户
+                    val currentUserId = getUserInfoByToken()?.userId!!
+                    val todo = mTodoService.findTodoById(params.safeNotEmptyGet("todoId"))
+                    //非法请求
+                    if (todo == null || todo.todoUserId != currentUserId){
+                        throw ResNotFoundException()
+                    }
+                }
 
-        //判断当前todo属于当前用户
-        val currentUserId = getUserInfoByToken()?.userId!!
-        val todo = mTodoService.findTodoById(todoId)
-        //非法请求
-        if (todo == null || todo.todoUserId != currentUserId){
-            throw ResNotFoundException()
-        }else{
-            //更新待办事项
-            val update = mTodoService.updateTodoDelStatus(todoId, todoDelType)
-            if (!update){
-                responseBean = ResponseBean.serviceError()
-            }
-        }
-        return responseBean
-    }
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    //更新待办事项
+                    val update = mTodoService.updateTodoDelStatus(
+                            params.safeNotEmptyGet("todoId"),
+                            params.safeNotEmptyGet("todoDel").toInt())
+                    if (!update){
+                        responseBean.buildServiceError()
+                    }
+                }
+
+            }).process()
 
 
     /**
@@ -101,27 +108,31 @@ class TodoController : BaseController(){
     @PutMapping("finish")
     fun finishTodo(): ResponseBean{
 
-        var responseBean = ResponseBean()
-        //校验参数
-        val todoId = getParamsNotEmpty("todoId")
-        //判断当前todo属于当前用户
-        val currentUserId = getUserInfoByToken()?.userId!!
-        val todo = mTodoService.findTodoById(todoId)
-        //非法请求
-        if (todo == null || todo.todoUserId != currentUserId){
-            throw ResNotFoundException()
-        }else{
-            if (todo.todoFinishDate != null){
-                throw ResNotFoundException()
-            }
-            //更新完成状态
-            val finish = mTodoService.updateTodoFinish(todoId, Date().time)
+        return ResponseWrapper(request,
+                object : ResponseHandle<HttpServletRequest>{
+                    override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                        //校验参数
+                        val todoId = this.getParamsNotEmpty(request, "todoId")
+                        //判断当前todo属于当前用户
+                        val currentUserId = getUserInfoByToken()?.userId!!
+                        val todo = mTodoService.findTodoById(todoId)
+                        //非法请求
+                        if (todo == null || todo.todoUserId != currentUserId || todo.todoFinishDate != null){
+                            throw ResNotFoundException()
+                        }
+                        params["todoId"] = todoId
+                    }
 
-            if (!finish){
-                responseBean = ResponseBean.serviceError()
-            }
-        }
-        return responseBean
+                    override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                        //更新完成状态
+                        val finish = mTodoService.updateTodoFinish(params.safeNotEmptyGet("todoId"),
+                                Date().time)
+                        if (!finish){
+                            responseBean.buildServiceError()
+                        }
+                    }
+
+                }).process()
     }
 
 
@@ -133,7 +144,7 @@ class TodoController : BaseController(){
     fun updateTodoTop(): ResponseBean{
         return ResponseWrapper(request, object :ResponseHandle<HttpServletRequest>{
             override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                params.putAll(getParams(request,"todoId", "todoTop"))
+                params.putAll(getParamsMap(request,"todoId", "todoTop"))
                 checkEmpty(params, "todoId", "todoTop")
 
                 tags["todo"] = checkTodo(params.safeNotEmptyGet("todoId")).apply {
@@ -164,7 +175,7 @@ class TodoController : BaseController(){
     fun updateTodoInfo() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                    params.putAll(getParams(request, "todoId", "todoContent", "todoTop",
+                    params.putAll(getParamsMap(request, "todoId", "todoContent", "todoTop",
                             "todoPlannedFinishDate", "todoRemind"))
                     checkEmpty(params,"todoId", "todoContent")
                     tags["todo"] = checkTodo(params.safeNotEmptyGet("todoId")).apply {
@@ -206,7 +217,7 @@ class TodoController : BaseController(){
     fun findByTodoId() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                    val todoId = getParamsNotEmpty("todoId")
+                    val todoId = this.getParamsNotEmpty(request,"todoId")
                     tags["todo"] = checkTodo(todoId)
                 }
 
@@ -217,14 +228,14 @@ class TodoController : BaseController(){
 
 
     /**
-     * 获取当前用户的待办事项
+     * 获取当前用户未删除的待办事项
      */
     @Login
     @GetMapping("all")
     fun findByUserId() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                    params.putAll(getParams(request, "pageNum", "pageSize"))
+                    params.putAll(getParamsMap(request, "pageNum", "pageSize"))
                     params.forEach {
                         checkInt(it.value)
                     }
@@ -241,6 +252,29 @@ class TodoController : BaseController(){
 
 
     /**
+     * 获取当前用户逻辑删除的待办事项
+     */
+    @Login
+    @GetMapping("allDel")
+    fun findDelTodoByUser() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    params.putAll(getParamsMap(request, "pageNum", "pageSize"))
+                    params.forEach {
+                        checkInt(it.value)
+                    }
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    responseBean.data = mTodoService.findDelTodoByUserId(getUserInfoByToken()?.userId!!,
+                            params.safeNotEmptyGet("pageNum").toInt(),
+                            params.safeNotEmptyGet("pageSize").toInt())
+                }
+
+            }).process()
+
+
+    /**
      * 获取某个类型的待办事项
      */
     @Login
@@ -248,7 +282,7 @@ class TodoController : BaseController(){
     fun findByType() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
-                    params.putAll(getParams(request, "pageNum", "pageSize", "todoType"))
+                    params.putAll(getParamsMap(request, "pageNum", "pageSize", "todoType"))
                     params.forEach {
                         checkInt(it.value)
                     }
@@ -267,6 +301,57 @@ class TodoController : BaseController(){
                 }
 
             }).process()
+
+
+    /**
+     * 删除某个待办事项
+     */
+    @Login
+    @DeleteMapping("del")
+    fun delTodoById() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    val todoId = getParamsNotEmpty(request, "todoId")
+                    val todo = mTodoService.findTodoById(todoId)
+                    val userId = getUserInfoByToken()!!.userId
+                    if (todo == null || todo.todoUserId != userId){
+                        throw ParamsErrorException()
+                    }
+                    params["todoId"] = todoId
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    val del = mTodoService.realDelByTodoId(params.safeNotEmptyGet("todoId"))
+                    if (!del){
+                        responseBean.buildServiceError()
+                    }
+                }
+            }).process()
+
+
+    /**
+     * 删除某个用户逻辑删除的待办事项
+     */
+    @Login
+    @DeleteMapping("delAll")
+    fun delTodoByUserId() = ResponseWrapper(request,
+            object : ResponseHandle<HttpServletRequest>{
+                override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
+                    val userId = getUserInfoByToken()!!.userId
+                    params["userId"] = userId
+                }
+
+                override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
+                    val del = mTodoService.realDelByUserId(params.safeNotEmptyGet("userId"))
+                    if (!del){
+                        responseBean.buildServiceError()
+                    }
+                }
+            }).process()
+
+
+
+
     
 
     /**

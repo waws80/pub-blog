@@ -19,7 +19,7 @@ class ResponseWrapper<REQ: HttpServletRequest>(private val request: REQ, private
             paramsMap.clear()
             //解析所有参数
             handle.preHandleWithParams(request, paramsMap, tags)
-            if (request is MultipartHttpServletRequest || ServletFileUpload.isMultipartContent(request) || handle.hasUploadFile()){
+            if (request is MultipartHttpServletRequest || handle.hasUploadFile()){
                 val multiPartRequest = request as MultipartHttpServletRequest
                 handle.preHandleWithUploadFile(multiPartRequest, paramsMap)
             }

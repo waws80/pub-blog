@@ -61,6 +61,12 @@ interface TodoService{
      */
     fun findTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean>
 
+    /**
+     * 查找回收站待办事项
+     * @param todoUserId 待办事项所属人id
+     */
+    fun findDelTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean>
+
 
     /**
      * 查找用户的某个类型待办事项
@@ -71,6 +77,18 @@ interface TodoService{
      * [TODO_TYPE_OTHER]
      */
     fun findTodoByType(todoUserId: String, @TodoType todoType: Int, page: Int, pageSize: Int): PageBean<TodoBean>
+
+
+    /**
+     * 物理删除todo
+     */
+    fun realDelByTodoId(todoId: String): Boolean
+
+
+    /**
+     * 物理删除指定用户下的todo
+     */
+    fun realDelByUserId(todoUserId: String): Boolean
 
     /**
      * 加密待办事项实体类

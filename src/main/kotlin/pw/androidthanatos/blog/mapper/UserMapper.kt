@@ -28,7 +28,7 @@ interface UserMapper {
     /**
      * 获取所有用户信息
      */
-    @Select("SELECT * FROM tb_user")
+    @Select("SELECT * FROM tb_user ")
     fun findAllUser(): List<UserBean> = emptyList()
 
     /**

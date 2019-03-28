@@ -101,10 +101,33 @@ const val TODO_LIST_NORMAL = 1 //普通
 
 const val TODO_LIST_TOP = 2 //置顶
 
+
+
 const val TODO_DEL_NORMAL = 1//没有删除
 
 const val TODO_DEL_DEL = 2//已经删除
 
+
+
 const val TODO_REMIND_NORMAL = 1 //不提醒
 
 const val TODO_REMIND_REMIND = 2 //提醒
+
+
+
+//=========== article 类型==============================
+
+val ARTICLE_TYPE = mutableListOf<HashMap<String, Any>>().apply {
+    add(hashMapOf<String, Any>().apply {
+        put("name","安卓")
+        put("value", listOf("全部", "控件", "图片加载", "网络访问", "新特性", "其他"))
+    })
+    add(hashMapOf<String, Any>().apply {
+        put("name","后端")
+        put("value", listOf("全部", "其他"))
+    })
+    add(hashMapOf<String, Any>().apply {
+        put("name","前端")
+        put("value", listOf("全部", "其他"))
+    })
+}

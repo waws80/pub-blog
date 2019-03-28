@@ -1,5 +1,6 @@
 package pw.androidthanatos.blog.common.response
 
+import org.jetbrains.annotations.NotNull
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.upload.UploadFileUtil
@@ -61,13 +62,24 @@ interface ResponseHandle<REQ: HttpServletRequest> {
     /**
      * 获取参数转换成map
      */
-    fun getParams(request: REQ, vararg keys: String): HashMap<String, String>{
+    fun getParamsMap(request: REQ, vararg keys: String): HashMap<String, String>{
         val map = HashMap<String, String>()
         keys.forEach {
             val value = request.getParameter(it)?:""
             map[it] = value
         }
         return map
+    }
+
+    /**
+     * 获取不为空的参数
+     */
+    fun getParamsNotEmpty(request: REQ, @NotNull key: String): String{
+        val params = request.getParameter(key)
+        if (params.isEmpty()){
+            throw ParamsErrorException()
+        }
+        return params
     }
 
     /**
@@ -105,6 +117,38 @@ interface ResponseHandle<REQ: HttpServletRequest> {
             }
         }
     }
+
+    /**
+     * 判断字符串是否是long
+     */
+    fun checkLong(value: String?){
+        if (value.isNullOrEmpty()){
+            throw ParamsErrorException()
+        }else{
+            try {
+                value.toLong()
+            }catch (e: Exception){
+                throw ParamsErrorException()
+            }
+        }
+    }
+
+    /**
+     * 字符串转化Int
+     */
+    fun convertInt(value: String?): Int?{
+        return if (value.isNullOrEmpty()) null
+        else value.toIntOrNull()
+    }
+
+    /**
+     * 字符串转化Long
+     */
+    fun convertLong(value: String?): Long?{
+        return if (value.isNullOrEmpty()) null
+        else value.toLongOrNull()
+    }
+
 
 
 

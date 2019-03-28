@@ -1,5 +1,6 @@
 package pw.androidthanatos.blog.mapper
 
+import org.apache.ibatis.annotations.Delete
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
@@ -91,16 +92,36 @@ interface TodoMapper {
      */
     @Select("select *" +
             "from tb_todo " +
-            "where todoUserId = #{todoUserId}")
-    fun findTodoByUserId(todoUserId: String): List<TodoBean>
+            "where todoUserId = #{todoUserId} and todoDel = #{todoDel} " +
+            "order by todoCreateDate desc")
+    fun findTodoByUserId(todoUserId: String, todoDel: Int = 1): List<TodoBean>
 
     /**
      * 获取当前用户下的待办事项数量
      */
     @Select("select count(todoId) " +
             "from tb_todo " +
-            "where todoUserId = #{todoUserId}")
-    fun findTodoByUserIdCount(todoUserId: String): Long
+            "where todoUserId = #{todoUserId} and todoDel = #{todoDel} ")
+    fun findTodoByUserIdCount(todoUserId: String, todoDel: Int = 1): Long
+
+
+    /**
+     * 查找待办事项
+     * @param todoUserId 待办事项所属人id
+     */
+    @Select("select *" +
+            "from tb_todo " +
+            "where todoUserId = #{todoUserId} and todoDel = #{todoDel} " +
+            "order by todoCreateDate desc ")
+    fun findDelTodoByUserId(todoUserId: String, todoDel: Int = 2): List<TodoBean>
+
+    /**
+     * 获取当前用户下的待办事项数量
+     */
+    @Select("select count(todoId) " +
+            "from tb_todo " +
+            "where todoUserId = #{todoUserId} and todoDel = #{todoDel} ")
+    fun findDelTodoByUserIdCount(todoUserId: String, todoDel: Int = 2): Long
 
 
     /**
@@ -113,8 +134,9 @@ interface TodoMapper {
      */
     @Select("select * " +
             "from tb_todo " +
-            "where todoUserId = #{todoUserId} and todoType = #{todoType}")
-    fun findTodoByType(todoUserId: String, @TodoType todoType: Int): List<TodoBean>
+            "where todoUserId = #{todoUserId} and todoType = #{todoType} and todoDel = #{todoDel} " +
+            "order by todoCreateDate desc ")
+    fun findTodoByType(todoUserId: String, @TodoType todoType: Int, todoDel: Int = 1): List<TodoBean>
 
 
     /**
@@ -122,7 +144,20 @@ interface TodoMapper {
      */
     @Select("select count(todoId) " +
             "from tb_todo " +
-            "where todoUserId = #{todoUserId} and todoType = #{todoType}")
-    fun findTodoByTypeCount(todoUserId: String, @TodoType todoType: Int): Long
+            "where todoUserId = #{todoUserId} and todoType = #{todoType} and todoDel = #{todoDel} ")
+    fun findTodoByTypeCount(todoUserId: String, @TodoType todoType: Int, todoDel: Int = 1): Long
 
+
+    /**
+     * 物理删除指定todo
+     */
+    @Delete("delete from tb_todo where todoId = #{todoId}  and todoDel = #{todoDel} ")
+    fun realDelByTodoId(todoId: String, todoDel: Int = 2): Int
+
+
+    /**
+     * 物理删除指定用户下的todo
+     */
+    @Delete("delete from tb_todo where todoUserId = #{todoUserId}  and todoDel = #{todoDel} ")
+    fun realDelByUserId(todoUserId: String, todoDel: Int = 2): Int
 }

@@ -41,6 +41,7 @@ abstract class BaseController {
     /**
      * 获取参数可为空
      */
+    @Deprecated("使用ResponseWrapper")
     protected fun getParams(@NotNull key: String, notEmpty:()->Unit = {}): String{
         val value = request.getParameter(key)?:""
         if (value.isNotEmpty()){
@@ -52,6 +53,7 @@ abstract class BaseController {
     /**
      * 获取不为空的参数
      */
+    @Deprecated("使用ResponseWrapper")
     protected fun getParamsNotEmpty(@NotNull key: String): String{
         val params = getParams(key)
         if (params.isEmpty()){
@@ -64,6 +66,7 @@ abstract class BaseController {
     /**
      * 检查参数是否合法
      */
+    @Deprecated("使用ResponseWrapper")
     protected fun checkParams(vararg params: String?){
         params.forEach {
             if (it.isNullOrEmpty()){
@@ -76,6 +79,7 @@ abstract class BaseController {
     /**
      * 检查参数是否合法
      */
+    @Deprecated("使用ResponseWrapper")
     protected fun checkParamsByKey(map: Map<String, String> = emptyMap(), vararg keys: String){
         keys.forEach {
             if (map[it].isNullOrEmpty()){
@@ -156,6 +160,7 @@ abstract class BaseController {
      * @param keys 参数key
      * @return [HashMap] 返回对应的key value
      */
+    @Deprecated("使用ResponseWrapper")
     protected fun convertParamsToMap(vararg keys: String): HashMap<String, String>{
         val map = HashMap<String, String>()
         keys.forEach {
