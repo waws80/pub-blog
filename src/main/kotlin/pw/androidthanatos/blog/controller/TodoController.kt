@@ -81,7 +81,9 @@ class TodoController : BaseController(){
                     params["todoDel"] = parseTodoDel(params["todoDel"]).toString()
                     //判断当前todo属于当前用户
                     val currentUserId = getUserInfoByToken()?.userId!!
-                    mTodoService.findTodoById(params.safeNotEmptyGet("todoId"), currentUserId) ?: throw ResNotFoundException()
+                    if (mTodoService.findTodoById(params.safeNotEmptyGet("todoId"), currentUserId) == null){
+                        throw ResNotFoundException()
+                    }
                 }
 
                 override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
@@ -309,7 +311,9 @@ class TodoController : BaseController(){
                 override fun preHandleWithParams(request: HttpServletRequest, params: HashMap<String, String>, tags: HashMap<String, Any>) {
                     val todoId = getParamsNotEmpty(request, "todoId")
                     val userId = getUserInfoByToken()!!.userId
-                    mTodoService.findTodoById(todoId, userId) ?: throw ResNotFoundException()
+                    if (mTodoService.findTodoById(todoId, userId) == null){
+                        throw ResNotFoundException()
+                    }
                     params["todoId"] = todoId
                 }
 

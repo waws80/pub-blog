@@ -20,8 +20,8 @@ class ArticleServiceImp : ArticleService {
         return mArticleMapper.addArticle(articleBean) > 0
     }
 
-    override fun delArticle(articleId: String, articleUserId: String): Boolean {
-        return mArticleMapper.delArticle(articleId, articleUserId) > 0
+    override fun delArticle(articleId: String): Boolean {
+        return mArticleMapper.delArticle(articleId) > 0
     }
 
     override fun updateArticleContent(articleId: String, articleUserId: String, articleContent: String): Boolean {
@@ -52,6 +52,14 @@ class ArticleServiceImp : ArticleService {
         return mArticleMapper.removeLikeArticle(articleId, userId) > 0
     }
 
+    override fun removeLikeArticle(articleId: String): Boolean {
+        return mArticleMapper.removeLikeArticleByArticleId(articleId) > 0
+    }
+
+    override fun findArticleLike(articleId: String, userId: String): Boolean {
+        return mArticleMapper.findArticleLike(articleId, userId) > 0
+    }
+
     override fun findArticleLikeCount(articleId: String): Long {
         return mArticleMapper.findArticleLikeCount(articleId)
     }
@@ -69,7 +77,7 @@ class ArticleServiceImp : ArticleService {
     }
 
 
-    override fun findArticleBySuperType(articleSuperType: String, articleType: String,
+    override fun findArticleBySuperType(articleSuperType: String, articleType: String?,
                                         pageNumber: Int, pageSize: Int): PageBean<ArticleBean>{
         PageHelper.startPage<ArticleBean>(pageNumber, pageSize)
         val list = mArticleMapper.findArticleBySuperType(articleSuperType, articleType)
@@ -83,6 +91,28 @@ class ArticleServiceImp : ArticleService {
         val list = mArticleMapper.findArticleByUserId(articleUserId)
         val count = mArticleMapper.findArticleByUserIdCount(articleUserId)
         return PageBean(pageNumber, pageSize, count, list)
+    }
 
+
+    override fun findCurrentUserLikeArticle(articleLikeUserId: String, pageNumber: Int, pageSize: Int): PageBean<ArticleBean> {
+        PageHelper.startPage<ArticleBean>(pageNumber, pageSize)
+        val list = mArticleMapper.findCurrentUserLikeArticle(articleLikeUserId)
+        val count = mArticleMapper.findCurrentUserLikeArticleCount(articleLikeUserId)
+        return PageBean(pageNumber, pageSize, count, list)
+    }
+
+    override fun findCurrentUserHistoryRead(articleHistoryUserId: String, pageNumber: Int, pageSize: Int): PageBean<ArticleBean> {
+        PageHelper.startPage<ArticleBean>(pageNumber, pageSize)
+        val list = mArticleMapper.findCurrentUserHistoryRead(articleHistoryUserId)
+        val count = mArticleMapper.findCurrentUserHistoryReadCount(articleHistoryUserId)
+        return PageBean(pageNumber, pageSize, count, list)
+    }
+
+    override fun addToHistory(articleId: String, userId: String): Boolean {
+        return mArticleMapper.addToHistory(articleId, userId) > 0
+    }
+
+    override fun findArticleHistoryInfo(articleId: String, userId: String): Boolean {
+        return mArticleMapper.findArticleHistoryInfo(articleId, userId) > 0
     }
 }

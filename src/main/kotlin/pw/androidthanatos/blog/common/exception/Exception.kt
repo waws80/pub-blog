@@ -17,8 +17,8 @@ class TokenErrorException(val code: Int = CODE_TOKEN_ERROR,
 /**
  * 请求token过期异常
  */
-class TokenTimeOutException(val code: Int = CODE_TOKEN_ERROR,
-                            val msg: String = MSG_TOKEN_ERROR): Exception(msg)
+class TokenTimeOutException(val code: Int = CODE_TOKEN_TIME_OUT,
+                            val msg: String = MSG_TOKEN_TIME_OUT): Exception(msg)
 
 /**
  * 参数错误异常

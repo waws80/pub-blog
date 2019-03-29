@@ -43,6 +43,9 @@ const val MSG_PATH_NOT_FOUND = "请求路径不存在"
 const val CODE_RES_NOT_FOUND = 3001
 const val MSG_RES_NOT_FOUND = "请求资源不存在"
 
+const val CODE_LOAD_URL_BODY_ERROR = 3002
+const val MSG_LOAD_URL_BODY_ERROR = "读取链接文本出错"
+
 const val CODE_TOKEN_ERROR = 4000
 const val MSG_TOKEN_ERROR = "登录token出错"
 
@@ -57,6 +60,9 @@ const val MSG_SERVICE_ERROR = "服务器繁忙"
 
 const val CODE_ILLEGAL_REQUEST = 5001
 const val MSG_ILLEGAL_REQUEST = "非法请求"
+
+const val CODE_REQUEST_METHOD_ERROR = 5002
+const val MSG_REQUEST_METHOD_ERROR = "请求方式出错"
 
 const val MSG_LINK_EXPIRES = "链接失效"
 
@@ -130,4 +136,9 @@ val ARTICLE_TYPE = mutableListOf<HashMap<String, Any>>().apply {
         put("name","前端")
         put("value", listOf("全部", "其他"))
     })
+    add(hashMapOf<String, Any>().apply {
+        put("name","其他")
+        put("value", listOf("全部"))
+    })
+
 }

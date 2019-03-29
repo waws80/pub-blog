@@ -134,6 +134,17 @@ interface ResponseHandle<REQ: HttpServletRequest> {
     }
 
     /**
+     * 检查参数是否为空
+     */
+    fun checkParamsEmpty(vararg values: String?){
+        values.forEach {
+            if (it.isNullOrEmpty()){
+                throw ParamsErrorException()
+            }
+        }
+    }
+
+    /**
      * 字符串转化Int
      */
     fun convertInt(value: String?): Int?{
@@ -147,6 +158,15 @@ interface ResponseHandle<REQ: HttpServletRequest> {
     fun convertLong(value: String?): Long?{
         return if (value.isNullOrEmpty()) null
         else value.toLongOrNull()
+    }
+
+
+    fun convertBool(value: String?): Boolean{
+        return if (value.isNullOrEmpty()){
+            throw ParamsErrorException()
+        }else{
+            value.toBoolean()
+        }
     }
 
 
