@@ -69,6 +69,11 @@ class ArticleServiceImp : ArticleService {
     }
 
 
+    override fun hasByArticleTitle(articleTitle: String): Boolean {
+        return mArticleMapper.findArticleByTitle(articleTitle) > 0
+    }
+
+
     override fun findAllArticle(pageNumber: Int, pageSize: Int): PageBean<ArticleBean>{
         PageHelper.startPage<ArticleBean>(pageNumber, pageSize)
         val list = mArticleMapper.findAllArticle()

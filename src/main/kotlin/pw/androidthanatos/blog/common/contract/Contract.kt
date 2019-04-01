@@ -37,6 +37,9 @@ const val MSG_PERMISSION_DENIED = "权限不足"
 const val CODE_USER_STATUS_BLACK = 2007
 const val MSG_USER_STATUS_BLACK = "用户被拉黑"
 
+const val CODE_INFO_TILE_REPEAT = 2008
+const val MSG_INFO_TILE_REPEAT = "添加的信息标题重名"
+
 const val CODE_PATH_NOT_FOUND = 3000
 const val MSG_PATH_NOT_FOUND = "请求路径不存在"
 

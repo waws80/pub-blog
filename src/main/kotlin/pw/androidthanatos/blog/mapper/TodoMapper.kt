@@ -81,10 +81,19 @@ interface TodoMapper {
      * 查找待办事项
      * @param todoId 待办事项id
      */
-    @Select("select *" +
+    @Select("select * " +
             "from tb_todo " +
             "where todoId = #{todoId} and todoUserId = #{todoUserId} ")
     fun findTodoById(todoId: String, todoUserId: String): TodoBean?
+
+
+    /**
+     * 通过待办事项标题获取实体
+     */
+    @Select("select count(*) " +
+            "from tb_todo " +
+            "where todoTitle = #{todoTitle} ")
+    fun findTodoByTitle(todoTitle: String): Int
 
     /**
      * 查找待办事项

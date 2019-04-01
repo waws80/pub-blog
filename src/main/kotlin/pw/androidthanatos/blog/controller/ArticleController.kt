@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import pw.androidthanatos.blog.common.annotation.ApiVersion
 import pw.androidthanatos.blog.common.annotation.Login
-import pw.androidthanatos.blog.common.contract.ARTICLE_TYPE
-import pw.androidthanatos.blog.common.contract.CODE_LOAD_URL_BODY_ERROR
-import pw.androidthanatos.blog.common.contract.MSG_LOAD_URL_BODY_ERROR
+import pw.androidthanatos.blog.common.contract.*
 import pw.androidthanatos.blog.common.exception.ParamsErrorException
 import pw.androidthanatos.blog.common.exception.ResNotFoundException
 import pw.androidthanatos.blog.common.extension.isURL
@@ -64,20 +62,27 @@ class ArticleController : BaseController() {
                     if (params["articleContent"].isNullOrEmpty() && params["articleUrl"].isNullOrEmpty()){
                         throw ParamsErrorException()
                     }
+
                     val bean = ArticleBean(articleId = createId(), articleTitle = params["articleTitle"]!!,
                             articleContent = params["articleContent"]!!, articleSuperType = params["articleSuperType"]!!,
                             articleType = params["articleType"]!!,articleUrl = params["articleUrl"]!!,
                             articleUserId = getUserInfoByToken()!!.userId)
                     tags["bean"] = bean
+
                 }
 
                 override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
-                    val add = mArticleService.addArticle(tags["bean"] as ArticleBean)
-                    if (!add){
-                        responseBean.buildServiceError()
+                    val bean = tags["bean"] as ArticleBean
+                    if (mArticleService.hasByArticleTitle(bean.articleTitle)){
+                        responseBean.code = CODE_INFO_TILE_REPEAT
+                        responseBean.msg = MSG_INFO_TILE_REPEAT
+                    }else{
+                        val add = mArticleService.addArticle(bean)
+                        if (!add){
+                            responseBean.buildServiceError()
+                        }
                     }
                 }
-
             }).process()
 
 

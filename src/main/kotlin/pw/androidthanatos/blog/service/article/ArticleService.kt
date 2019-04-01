@@ -91,7 +91,16 @@ interface ArticleService {
     fun findArticleLikeCount(articleId: String): Long
 
 
+    /**
+     * 通过文章id获取详情
+     */
     fun findArticleByArticleId(articleId: String): ArticleBean?
+
+
+    /**
+     * 判断当前标题的文章是否存在
+     */
+    fun hasByArticleTitle(articleTitle: String): Boolean
 
     /**
      * 获取所有的文章

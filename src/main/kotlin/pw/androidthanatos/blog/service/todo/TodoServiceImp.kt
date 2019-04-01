@@ -70,6 +70,11 @@ class TodoServiceImp  : TodoService{
         return PageBean(page, pageSize, count, list)
     }
 
+
+    override fun hasTodoTitle(todoTitle: String): Boolean {
+        return mTodoMapper.findTodoByTitle(todoTitle.toBase64Encode()) > 0
+    }
+
     override fun findTodoByType(todoUserId: String, todoType: Int, page: Int, pageSize: Int): PageBean<TodoBean> {
         PageHelper.startPage<TodoBean>(page, pageSize)
         val list = mTodoMapper.findTodoByType(todoUserId, todoType).apply {

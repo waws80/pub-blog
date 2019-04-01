@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
 import org.springframework.stereotype.Component
 import pw.androidthanatos.blog.entity.ArticleBean
+import pw.androidthanatos.blog.entity.TodoBean
 import java.util.*
 
 /**
@@ -124,6 +125,15 @@ interface ArticleMapper {
             "where articleId = #{articleId} ")
     fun findArticleByArticleId(articleId: String): ArticleBean?
 
+
+    /**
+     * 通过待办事项标题获取实体
+     */
+    @Select("select count(*) " +
+            "from tb_article " +
+            "where articleTitle = #{articleTitle} ")
+    fun findArticleByTitle(articleTitle: String): Int
+
     /**
      * 获取所有的文章
      */
@@ -215,10 +225,10 @@ interface ArticleMapper {
 
 
     /**
-     * 获取当前用户喜欢的文章列表的数量
+     * 获取当前用户浏览的文章列表的数量
      */
     @Select("select count(articleHistoryArticleId)  " +
-            "from tb_article_like where articleHistoryUserId = #{articleHistoryUserId} ")
+            "from tb_article_history where articleHistoryUserId = #{articleHistoryUserId} ")
     fun findCurrentUserHistoryReadCount(articleHistoryUserId: String): Long
 
     /**

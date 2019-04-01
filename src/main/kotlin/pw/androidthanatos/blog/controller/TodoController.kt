@@ -58,9 +58,15 @@ class TodoController : BaseController(){
                 }
 
                 override fun handle(params: HashMap<String, String>, tags: HashMap<String, Any>, responseBean: ResponseBean) {
-                    val add = mTodoService.addTodo(tags["todo"] as TodoBean)
-                    if (!add){
-                        responseBean.buildServiceError()
+                    val bean = tags["todo"] as TodoBean
+                    if (mTodoService.hasTodoTitle(bean.todoTitle)){
+                        responseBean.code = CODE_INFO_TILE_REPEAT
+                        responseBean.msg = MSG_INFO_TILE_REPEAT
+                    }else{
+                        val add = mTodoService.addTodo(bean)
+                        if (!add){
+                            responseBean.buildServiceError()
+                        }
                     }
                 }
             }).process()

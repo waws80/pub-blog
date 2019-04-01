@@ -61,6 +61,12 @@ interface TodoService{
      */
     fun findTodoByUserId(todoUserId: String, page: Int, pageSize: Int): PageBean<TodoBean>
 
+
+    /**
+     * 判断当前标题的待办事项是否存在
+     */
+    fun hasTodoTitle(todoTitle: String): Boolean
+
     /**
      * 查找回收站待办事项
      * @param todoUserId 待办事项所属人id
