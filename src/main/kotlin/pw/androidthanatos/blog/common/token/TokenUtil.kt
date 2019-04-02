@@ -26,7 +26,7 @@ class TokenUtil {
 
         //token 过期时间 天
         private const val CalendarField = Calendar.DATE
-        private const val CalendarInterval = TOKEN_EXPIRES_DAY
+        private val CalendarInterval = TOKEN_EXPIRES_DAY
 
         private const val KEY_USER_ID = "userId"
 

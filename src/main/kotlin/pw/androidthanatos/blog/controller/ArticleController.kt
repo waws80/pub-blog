@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest
 @Suppress("MVCPathVariableInspection")
 @ApiVersion(1)
 @RestController
-@RequestMapping("article/{version}")
+@RequestMapping("api/article/{version}")
 class ArticleController : BaseController() {
 
     @Autowired

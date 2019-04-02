@@ -20,7 +20,7 @@ import kotlin.collections.HashMap
  */
 @RestController
 @ApiVersion(1)
-@RequestMapping("/user/{version}")
+@RequestMapping("api/user/{version}")
 class UserController : BaseController(){
 
     @Autowired

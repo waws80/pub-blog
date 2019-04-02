@@ -25,7 +25,7 @@ import kotlin.collections.HashMap
 @Suppress("MVCPathVariableInspection")
 @ApiVersion(1)
 @RestController
-@RequestMapping("todo/{version}")
+@RequestMapping("api/todo/{version}")
 class TodoController : BaseController(){
 
     @Autowired
