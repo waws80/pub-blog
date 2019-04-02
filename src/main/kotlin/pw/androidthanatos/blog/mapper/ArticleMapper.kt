@@ -214,7 +214,7 @@ interface ArticleMapper {
     /**
      * 获取当前用户阅读历史记录
      */
-    @Select("select count(articleLikeArticleId) as likeCount, articleId, articleTitle, " +
+    @Select("select count(articleLikeArticleId) as likeCount, tb_article_history.createDate as historyDate, articleId, articleTitle, " +
             "            articleCreateDate, articleType, articleUserId, articleSuperType, articleUrl, articleVisitsCount " +
             "            from tb_article " +
             "            left join tb_article_like on articleId = articleLikeArticleId " +

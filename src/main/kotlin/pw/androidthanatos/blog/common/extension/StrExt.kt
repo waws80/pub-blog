@@ -80,7 +80,7 @@ fun String.isEmail(): Boolean{
  * 是否是url格式
  */
 fun String.isURL(): Boolean{
-    return RegexUtil.isURL(this)
+    return this.startsWith("http") && RegexUtil.isURL(this)
 }
 
 /**

@@ -62,6 +62,9 @@ class ArticleController : BaseController() {
                     if (params["articleContent"].isNullOrEmpty() && params["articleUrl"].isNullOrEmpty()){
                         throw ParamsErrorException()
                     }
+                    if (!params["articleUrl"]!!.isURL()){
+                        throw ParamsErrorException()
+                    }
 
                     val bean = ArticleBean(articleId = createId(), articleTitle = params["articleTitle"]!!,
                             articleContent = params["articleContent"]!!, articleSuperType = params["articleSuperType"]!!,
@@ -419,8 +422,9 @@ class ArticleController : BaseController() {
 
 
     /**
-     * 获取某个人所有文章
+     * 获取当前用户所有文章
      */
+    @Login
     @GetMapping("allWithCurrentUserId")
     fun getAllArticleByCurrentUserId() = ResponseWrapper(request,
             object : ResponseHandle<HttpServletRequest>{
@@ -509,7 +513,7 @@ class ArticleController : BaseController() {
      */
     fun checkSuperType(params: HashMap<String, String>, articleSuperType: String?){
         if (articleSuperType.isNullOrEmpty()){
-            params["articleSuperType"] = "其他"
+            params["articleSuperType"] = "其它"
         }else{
             var can = false
             ARTICLE_TYPE.forEach {
@@ -526,7 +530,7 @@ class ArticleController : BaseController() {
      */
     fun checkType(params: HashMap<String, String>, articleType: String?){
         if (articleType.isNullOrEmpty()){
-            params["articleType"] = "其他"
+            params["articleType"] = "其它"
         }else{
             var can = false
             ARTICLE_TYPE.forEach {

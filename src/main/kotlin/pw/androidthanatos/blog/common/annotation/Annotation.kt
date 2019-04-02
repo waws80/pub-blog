@@ -23,7 +23,6 @@ annotation class ApiVersion(val value: Int)
  * 标记[ResponseBean] 可使用的　code
  */
 @IntDef(CODE_SUCCESS,
-        CODE_FAILURE,
         CODE_PARAMS_ERROR,
         CODE_PHONE_HAS_REGISTER,
         CODE_PHONE_NOT_REGISTER,
@@ -37,7 +36,6 @@ annotation class ApiVersion(val value: Int)
         CODE_LOAD_URL_BODY_ERROR,
         CODE_TOKEN_ERROR,
         CODE_TOKEN_TIME_OUT,
-        CODE_PERMISSION_ERROR,
         CODE_SERVICE_ERROR,
         CODE_REQUEST_METHOD_ERROR,
         CODE_ILLEGAL_REQUEST)
@@ -49,7 +47,6 @@ annotation class ResponseCode
  * 标记[ResponseBean] 可使用的　msg
  */
 @StringDef(MSG_SUCCESS,
-        MSG_FAILURE,
         MSG_PARAMS_ERROR,
         MSG_PHONE_HAS_REGISTER,
         MSG_PHONE_NOT_REGISTER,
@@ -63,7 +60,6 @@ annotation class ResponseCode
         MSG_LOAD_URL_BODY_ERROR,
         MSG_TOKEN_ERROR,
         MSG_TOKEN_TIME_OUT,
-        MSG_PERMISSION_ERROR,
         MSG_SERVICE_ERROR,
         MSG_REQUEST_METHOD_ERROR,
         MSG_ILLEGAL_REQUEST)

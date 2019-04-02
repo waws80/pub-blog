@@ -13,8 +13,8 @@ const val KEY_HEADER_REFRESH_TOKEN = "Refresh-token"
 const val CODE_SUCCESS = 1000
 const val MSG_SUCCESS = "请求成功"
 
-const val CODE_FAILURE = 2000
-const val MSG_FAILURE = "请求失败"
+const val CODE_REQUEST_METHOD_ERROR = 2000
+const val MSG_REQUEST_METHOD_ERROR = "请求方式出错"
 
 const val CODE_PARAMS_ERROR = 2001
 const val MSG_PARAMS_ERROR = "请求参数错误"
@@ -30,9 +30,6 @@ const val MSG_LOGIN_PARAMS_ERROR = "登录信息出错"
 
 const val CODE_HEADER_NO_TOKEN = 2005
 const val MSG_HEADER_NO_TOKEN = "请求token不存在"
-
-const val CODE_PERMISSION_DENIED = 2006
-const val MSG_PERMISSION_DENIED = "权限不足"
 
 const val CODE_USER_STATUS_BLACK = 2007
 const val MSG_USER_STATUS_BLACK = "用户被拉黑"
@@ -55,17 +52,14 @@ const val MSG_TOKEN_ERROR = "登录token出错"
 const val CODE_TOKEN_TIME_OUT = 4001
 const val MSG_TOKEN_TIME_OUT = "登录状态过期"
 
-const val CODE_PERMISSION_ERROR = 4002
-const val MSG_PERMISSION_ERROR = "权限不足"
+const val CODE_PERMISSION_DENIED = 4002
+const val MSG_PERMISSION_DENIED = "权限不足"
 
 const val CODE_SERVICE_ERROR = 5000
 const val MSG_SERVICE_ERROR = "服务器繁忙"
 
 const val CODE_ILLEGAL_REQUEST = 5001
 const val MSG_ILLEGAL_REQUEST = "非法请求"
-
-const val CODE_REQUEST_METHOD_ERROR = 5002
-const val MSG_REQUEST_METHOD_ERROR = "请求方式出错"
 
 const val MSG_LINK_EXPIRES = "链接失效"
 
@@ -129,18 +123,18 @@ const val TODO_REMIND_REMIND = 2 //提醒
 val ARTICLE_TYPE = mutableListOf<HashMap<String, Any>>().apply {
     add(hashMapOf<String, Any>().apply {
         put("name","安卓")
-        put("value", listOf("全部", "控件", "图片加载", "网络访问", "新特性", "其他"))
+        put("value", listOf("全部", "控件", "图片加载", "网络访问", "新特性", "其它"))
     })
     add(hashMapOf<String, Any>().apply {
         put("name","后端")
-        put("value", listOf("全部", "其他"))
+        put("value", listOf("全部", "其它"))
     })
     add(hashMapOf<String, Any>().apply {
         put("name","前端")
-        put("value", listOf("全部", "其他"))
+        put("value", listOf("全部", "其它"))
     })
     add(hashMapOf<String, Any>().apply {
-        put("name","其他")
+        put("name","其它")
         put("value", listOf("全部"))
     })
 

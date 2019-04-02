@@ -14,4 +14,5 @@ data class ArticleBean(val articleId: String = "",
                        var articleUserId: String = "",
                        var articleUrl: String = "",
                        var articleVisitsCount: Long = 0,
-                       var likeCount: Long = 0)
+                       var likeCount: Long = 0,
+                       var historyDate: Long = 0)
