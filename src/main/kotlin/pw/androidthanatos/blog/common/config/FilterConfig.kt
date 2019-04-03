@@ -8,10 +8,10 @@ import pw.androidthanatos.blog.common.filter.ResponseFilter
 /**
  * 过滤器配置
  */
-@Configuration
+//@Configuration
 class FilterConfig {
 
-    @Bean
+    //@Bean
     fun registerFilter(): FilterRegistrationBean<ResponseFilter>{
         val registrationBean = FilterRegistrationBean<ResponseFilter>()
         registrationBean.filter = getResponseFilter()
@@ -19,6 +19,6 @@ class FilterConfig {
         return registrationBean
     }
 
-    @Bean
+    //@Bean
     fun getResponseFilter() = ResponseFilter()
 }

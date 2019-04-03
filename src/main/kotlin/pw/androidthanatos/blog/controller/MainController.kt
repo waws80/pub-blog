@@ -2,15 +2,18 @@ package pw.androidthanatos.blog.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import pw.androidthanatos.blog.common.annotation.Login
 import pw.androidthanatos.blog.common.response.ResponseBean
+import pw.androidthanatos.blog.debug
 
 /**
  * 主控制器
  */
 @RestController
+@RequestMapping("api")
 class MainController : BaseController(){
 
 
@@ -20,7 +23,7 @@ class MainController : BaseController(){
      */
     @GetMapping("index")
     fun index() :ResponseBean{
-        return ResponseBean(data = "hello! this is a blog api service")
+        return ResponseBean(data = "hello! this is a blog api service$debug")
     }
 
     /**

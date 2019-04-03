@@ -1,16 +1,11 @@
 package pw.androidthanatos.blog.common.filter
 
-import com.google.gson.Gson
-import org.apache.catalina.filters.AddDefaultCharsetFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pw.androidthanatos.blog.common.contract.KEY_HEADER_REFRESH_TOKEN
 import pw.androidthanatos.blog.common.contract.KEY_HEADER_TOKEN
-import pw.androidthanatos.blog.common.exception.TokenTimeOutException
 import pw.androidthanatos.blog.common.extension.logi
-import pw.androidthanatos.blog.common.response.ResponseBean
 import pw.androidthanatos.blog.common.token.TokenUtil
-import java.nio.charset.Charset
 import javax.servlet.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -18,10 +13,10 @@ import javax.servlet.http.HttpServletResponse
 /**
  * 响应过滤器
  */
-@Component
+//@Component
 class ResponseFilter : Filter {
 
-    @Autowired
+    //@Autowired
     private lateinit var mTokenUtil: TokenUtil
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {

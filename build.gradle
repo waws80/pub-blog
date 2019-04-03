@@ -7,8 +7,10 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 
+apply plugin: 'war'
+
 group = 'pw.androidthanatos'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0'
 sourceCompatibility = '1.8'
 
 repositories {
