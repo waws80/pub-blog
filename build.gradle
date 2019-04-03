@@ -41,6 +41,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     //jsoup
     implementation 'org.jsoup:jsoup:1.10.2'
+    //servlet-api
+    providedRuntime 'org.apache.tomcat:tomcat-servlet-api:8.0.36'
 }
 
 compileKotlin {
